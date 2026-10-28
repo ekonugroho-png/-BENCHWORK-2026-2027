@@ -743,6 +743,78 @@ input{font-family:inherit;outline:none}
   .home-brand img{width:60px;height:60px}
 }
 
+
+/* ========== INTEGRASI SIMULASI 3D HOME ========== */
+/* Area home diperbesar untuk menampilkan alat dan benda kerja 3D,
+   tanpa mengubah materi, tombol, atau navigasi situs utama. */
+.hero-with-simulator {
+  display:grid;
+  grid-template-columns:minmax(0,.87fr) minmax(400px,1.13fr);
+  gap:24px;
+  align-items:center;
+}
+.hero-with-simulator > .hero-content {min-width:0}
+.bw-sim-shell {
+  min-width:0;
+  position:relative;
+  border:1px solid rgba(34,211,238,.35);
+  border-radius:15px;
+  overflow:hidden;
+  background:#1e293b;
+  box-shadow:0 16px 42px rgba(0,0,0,.3);
+}
+.bw-sim-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  background:#0d1725;
+  border-bottom:1px solid rgba(34,211,238,.22);
+}
+.bw-sim-heading .bw-sim-label {
+  color:#cbd5e1;
+  font-size:12px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.bw-sim-heading .bw-sim-label i {color:#22d3ee}
+.bw-sim-expand {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:6px 9px;
+  border-radius:7px;
+  background:#1e293b;
+  border:1px solid #334155;
+  color:#e2e8f0;
+  font-family:inherit;
+  font-size:11px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.bw-sim-expand:hover {border-color:#22d3ee;color:#67e8f9}
+.bw-sim-iframe {
+  display:block;
+  width:100%;
+  height:475px;
+  background:#1e293b;
+  border:0;
+}
+@media (max-width:1250px) {
+  .hero-with-simulator {grid-template-columns:1fr;gap:24px}
+  .bw-sim-iframe {height:490px}
+}
+@media (max-width:600px) {
+  .bw-sim-iframe {height:440px}
+  .bw-sim-heading {padding:8px 10px}
+  .bw-sim-heading .bw-sim-label {font-size:11px}
+  .bw-sim-expand {font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -793,7 +865,7 @@ input{font-family:inherit;outline:none}
       <!-- ===== HOME ===== -->
       <section class="page-section active" id="page-home">
         <div class="hero">
-          <div class="hero-with-logo">
+          <div class="hero-with-simulator">
             <div class="hero-content">
               <div class="home-brand">
                 <img src="images/logo-atmi.jpg" alt="Logo ATMI">
@@ -810,7 +882,1883 @@ input{font-family:inherit;outline:none}
                 <button class="btn btn-secondary" onclick="navigateTo('materi')"><i class="fa-solid fa-book-open"></i> Pelajari Materi</button>
               </div>
             </div>
-            <img class="hero-logo" src="images/logo-atmi.jpg" alt="Logo ATMI">
+            <div class="bw-sim-shell" aria-label="Simulasi 3D Kerja Bangku">
+              <div class="bw-sim-heading">
+                <span class="bw-sim-label"><i class="fa-solid fa-cubes"></i> Simulasi Kerja Bangku 3D</span>
+                <button type="button" class="bw-sim-expand" onclick="expandBenchWork3D()" title="Perbesar simulasi ke layar penuh">
+                  <i class="fa-solid fa-expand"></i> Layar Penuh
+                </button>
+              </div>
+              <iframe id="benchwork3dFrame" class="bw-sim-iframe" title="Simulasi 3D Filing, Crosscut Chisel, Sawing, dan Drilling" loading="eager" allowfullscreen srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Simulasi 3D Kerja Bangku — Tampilan Fokus&lt;/title&gt;
+  
+  &lt;!-- Tailwind CSS CDN --&gt;
+  &lt;script src=&quot;https://cdn.tailwindcss.com&quot;&gt;&lt;/script&gt;
+  &lt;!-- Google Fonts: Inter &amp; JetBrains Mono --&gt;
+  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+  &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+  
+  &lt;!-- FontAwesome Icons --&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css&quot;&gt;
+  
+  &lt;!-- Three.js r128 &amp; OrbitControls --&gt;
+  &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js&quot;&gt;&lt;/script&gt;
+
+  &lt;style&gt;
+    body {
+      font-family: &#x27;Inter&#x27;, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+    .font-mono-code {
+      font-family: &#x27;JetBrains Mono&#x27;, monospace;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* V2 FOKUS 3D: UI ringkas, tak ada overlay lebar yang menutup benda kerja saat membuka halaman */
+    #canvas-container, #canvas-container canvas { width: 100%; height: 100%; display: block; }
+    body { overflow: hidden; }
+    .app-header { position: fixed; top: 12px; left: 12px; z-index: 21; pointer-events: none; max-width: calc(100vw - 24px); }
+    .brand-chip { display: flex; align-items: center; gap: 9px; background: rgba(10,20,36,.78); border: 1px solid rgba(100,116,139,.35); border-radius: 13px; padding: 7px 11px; box-shadow: 0 8px 24px rgba(2,6,23,.24); backdrop-filter: blur(14px); }
+    .brand-icon { flex: none; width: 29px; height: 29px; display: grid; place-items: center; border-radius: 9px; background: linear-gradient(135deg,#0891b2,#2563eb); font-size: 13px; color: white; }
+    .brand-copy { min-width: 0; display: grid; gap: 2px; }
+    .brand-copy strong { font-size: 12px; letter-spacing: -.02em; line-height: 1.2; white-space: nowrap; }
+    .brand-copy small { font-size: 9px; color: #94a3b8; white-space: nowrap; }
+    .process-count { font-size: 9px; border: 1px solid #155e75; border-radius: 6px; color:#67e8f9; padding:3px 5px; white-space: nowrap; font-weight: 700; }
+    .quick-toolbar { position: fixed; z-index: 23; top: 64px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 22px); padding: 5px; display: flex; align-items: center; gap: 6px; background: rgba(10,20,36,.8); border: 1px solid rgba(71,85,105,.65); border-radius: 15px; box-shadow: 0 12px 36px rgba(2,6,23,.30); backdrop-filter: blur(16px); }
+    .quick-modes { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 4px; }
+    .quick-toolbar .mode-tab { min-height: 36px; padding: 5px 10px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 600; white-space: nowrap; border-radius: 10px; transition: background .2s,color .2s; }
+    .quick-toolbar .mode-tab i { font-size: 12px; }
+    .quick-actions { display: flex; align-items: center; gap: 4px; padding-left: 6px; border-left: 1px solid #334155; }
+    .action-btn { min-width: 39px; height: 36px; border-radius: 9px; padding: 0 7px; display: flex; align-items: center; justify-content: center; gap: 5px; color: #cbd5e1; background: rgba(30,41,59,.85); border: 1px solid rgba(71,85,105,.60); white-space: nowrap; font-size: 10px; font-weight: 600; cursor: pointer; transition: background .15s,transform .15s,border-color .15s; }
+    .action-btn:hover, .action-btn[aria-expanded=&quot;true&quot;] { color: #ecfeff; border-color: #0891b2; background: #155e75; }
+    .action-btn:active { transform: scale(.96); }
+    #btn-toggle-play.bg-cyan-600 { background: #0891b2; color: white; border-color: #0891b2; }
+    #btn-toggle-play.bg-emerald-600 { background: #059669; color: white; border-color: #059669; }
+    .action-btn i { font-size: 12px; }
+    .settings-drawer, .stats-panel, .material-panel { position: fixed; z-index: 22; color: #f1f5f9; background: rgba(12,22,39,.94); border: 1px solid rgba(71,85,105,.75); box-shadow: 0 18px 50px rgba(0,0,0,.4); backdrop-filter: blur(18px); border-radius: 15px; }
+    .settings-drawer { top: 123px; left: 12px; width: min(328px,calc(100vw - 24px)); max-height: calc(100dvh - 140px); overflow-y: auto; display:flex; flex-direction:column; gap: 14px; padding:14px; transform:translateX(calc(-100% - 24px)); opacity:0; visibility:hidden; pointer-events:none; transition:transform .22s ease, opacity .22s ease,visibility .22s; font-size: 12px; }
+    .settings-drawer.is-open { transform:translateX(0); opacity:1; visibility:visible; pointer-events:auto; }
+    .floating-panel-header { display:flex; align-items:center; justify-content:space-between; gap: 9px; padding-bottom:10px; border-bottom:1px solid #334155; margin-bottom:10px; }
+    .floating-panel-header strong {font-size:12px; letter-spacing:.005em; display:flex; align-items:center; gap:8px;}
+    .drawer-heading { position:sticky; top:-14px; margin-bottom:0; padding-top:4px; padding-bottom:10px; z-index:3; background:rgba(12,22,39,.97); }
+    .panel-close { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; flex:none; color:#cbd5e1; background:#1e293b; border:1px solid #334155; }
+    .panel-close:hover { color:white; background:#475569; }
+    .stats-panel { top: 123px; right: 12px; width:min(285px, calc(100vw - 24px)); padding: 13px; display:none; }
+    .stats-panel.is-open { display:block; }
+    .stats-items { display:grid; gap:7px; font-size:11px; }
+    .stats-items &gt; div { display:flex; justify-content:space-between; align-items:center; min-height:33px; gap:7px; padding:6px 9px; border:1px solid #334155; border-radius:8px; background:rgba(2,6,23,.55); }
+    .stats-items &gt; div &gt; .text-slate-400 { font-size:10px; }
+    .stats-items &gt; div &gt; span:last-child { text-align:right; }
+    .material-panel { bottom: 14px; right: 12px; width: min(465px, calc(100vw - 24px)); max-height: min(370px,calc(100dvh - 144px)); overflow-y:auto; padding:13px; display:none; }
+    .material-panel.is-open { display:block; }
+    .material-content { font-size:12px; }
+    .material-content &gt; div { align-items:flex-start; }
+    .material-content #edu-badge { display:inline-block; margin-top:4px; }
+    .material-content #edu-desc { line-height:1.55; }
+    .material-hint {margin-top:12px; padding-top:9px; border-top:1px solid #334155; color:#94a3b8; font-size:10px;}
+    .exit-focus { display:none; position:fixed; top:12px; right:12px; z-index:28; padding:10px 13px; border:1px solid #0891b2; background:rgba(8,47,73,.87); color:#a5f3fc; border-radius:10px; font-size:11px; font-weight:700; gap:8px; align-items:center; backdrop-filter:blur(10px); }
+    body.focus-view .app-header, body.focus-view .quick-toolbar, body.focus-view .stats-panel, body.focus-view .settings-drawer, body.focus-view .material-panel { display:none !important; }
+    body.focus-view .exit-focus { display:flex; }
+    .quick-toolbar button:focus-visible, .panel-close:focus-visible, .exit-focus:focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
+    #toast { top: 13px; left: auto; right: 12px; transform:none; max-width: min(290px,80vw); z-index:26; }
+    @media (max-width: 900px) {
+      .app-header { top:8px;left:8px; }
+      .brand-chip { padding:5px 8px; gap:6px; }
+      .brand-copy small { display:none; }
+      .process-count {font-size:8px;}
+      .quick-toolbar { top:59px; }
+      .quick-toolbar .mode-tab { padding:5px 7px; font-size:10px; }
+      .action-btn { min-width:31px; }
+      .action-btn span { display:none; }
+      .settings-drawer, .stats-panel {top:110px;}
+      .settings-drawer {max-height:calc(100dvh - 127px);}
+      .material-panel {max-height:calc(100dvh - 127px);}
+    }
+    @media (max-width: 630px) {
+      .brand-icon {width:24px;height:24px;}
+      .brand-copy strong {font-size:11px;}
+      .quick-toolbar { left:8px; right:8px; top:auto; bottom: max(9px,env(safe-area-inset-bottom)); transform:none; width:auto; max-width:none; display:grid; grid-template-columns:minmax(0,1fr); gap:5px; }
+      .quick-modes { width:100%; }
+      .quick-toolbar .mode-tab { min-height:37px; padding:4px 2px; flex-direction:column; gap:2px; font-size:9px; line-height:1.15; white-space:normal; }
+      .quick-toolbar .mode-tab i {font-size:11px;}
+      .quick-actions { border-left:0; border-top:1px solid #334155; padding:5px 0 0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); }
+      .quick-actions .action-btn { min-width:0;width:100%;height:32px; }
+      .quick-actions .action-btn span {display:inline;font-size:9px;}
+      .quick-actions .action-btn i {font-size:10px;}
+      .settings-drawer {top:48px;left:8px;max-height:calc(100dvh - 169px);width:min(328px,calc(100vw - 16px));}
+      .stats-panel {top:48px;right:8px;width:min(285px,calc(100vw - 16px));}
+      .material-panel {bottom:113px;right:8px;width:calc(100vw - 16px);max-height:calc(100dvh - 160px);}
+      #toast {top:49px; right:8px;}
+    }
+    @media (max-width: 370px) {
+      .brand-copy strong {font-size:10px;}
+      .process-count {display:none;}
+      .quick-actions .action-btn span {font-size:8px;}
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .settings-drawer,.quick-toolbar .mode-tab,.action-btn {transition:none!important;}
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body class=&quot;bg-slate-950 text-slate-100 h-screen w-screen relative overflow-hidden&quot;&gt;
+
+  &lt;!-- 3D WebGL Canvas Container --&gt;
+  &lt;div id=&quot;canvas-container&quot; class=&quot;absolute inset-0 z-0&quot;&gt;&lt;/div&gt;
+
+  &lt;!-- Bilah antarmuka ringkas: model 3D selalu menjadi fokus utama --&gt;
+  &lt;header class=&quot;app-header&quot; id=&quot;app-header&quot;&gt;
+    &lt;div class=&quot;brand-chip&quot;&gt;
+      &lt;span class=&quot;brand-icon&quot;&gt;&lt;i class=&quot;fa-solid fa-screwdriver-wrench&quot;&gt;&lt;/i&gt;&lt;/span&gt;
+      &lt;div class=&quot;brand-copy&quot;&gt;
+        &lt;strong&gt;Simulasi 3D Kerja Bangku&lt;/strong&gt;
+        &lt;small&gt;Filing · Crosscut Chisel · Sawing · Drilling&lt;/small&gt;
+      &lt;/div&gt;
+      &lt;span class=&quot;process-count&quot;&gt;4 PROSES&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;!-- Pilihan proses tetap dapat diakses tanpa membuka panel besar --&gt;
+  &lt;nav class=&quot;quick-toolbar&quot; id=&quot;quick-toolbar&quot; aria-label=&quot;Navigasi proses simulasi&quot;&gt;
+    &lt;div class=&quot;quick-modes&quot; role=&quot;group&quot; aria-label=&quot;Pilih proses kerja&quot;&gt;
+&lt;button data-mode=&quot;filing&quot; class=&quot;mode-tab py-2 px-1 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] flex flex-col items-center gap-1 transition&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-grip-lines text-xs&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;Filing&lt;/span&gt;
+      &lt;/button&gt;
+&lt;button data-mode=&quot;chiseling&quot; class=&quot;mode-tab py-2 px-1 rounded-lg text-slate-400 hover:text-white font-medium text-[10px] flex flex-col items-center gap-1 transition&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-gavel text-xs&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;Crosscut Chisel&lt;/span&gt;
+      &lt;/button&gt;
+&lt;button data-mode=&quot;sawing&quot; class=&quot;mode-tab py-2 px-1 rounded-lg text-slate-400 hover:text-white font-medium text-[10px] flex flex-col items-center gap-1 transition&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-bacon text-xs&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;Sawing&lt;/span&gt;
+      &lt;/button&gt;
+&lt;button data-mode=&quot;drilling&quot; class=&quot;mode-tab py-2 px-1 rounded-lg text-slate-400 hover:text-white font-medium text-[10px] flex flex-col items-center gap-1 transition&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-bore-hole text-xs&quot;&gt;&lt;/i&gt;
+        &lt;span&gt;Drilling&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;quick-actions&quot; role=&quot;group&quot; aria-label=&quot;Kontrol tampilan&quot;&gt;
+      &lt;button id=&quot;btn-toggle-play&quot; class=&quot;action-btn bg-cyan-600&quot; type=&quot;button&quot; title=&quot;Jalankan atau jeda animasi&quot; aria-label=&quot;Jeda animasi&quot;&gt;
+        &lt;i id=&quot;btn-play-icon&quot; class=&quot;fa-solid fa-pause&quot;&gt;&lt;/i&gt;&lt;span id=&quot;btn-play-text&quot;&gt;Jeda&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;btn-settings&quot; class=&quot;action-btn&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;settings-drawer&quot; title=&quot;Buka pengaturan proses&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-sliders&quot;&gt;&lt;/i&gt;&lt;span&gt;Atur&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;btn-stats&quot; class=&quot;action-btn&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;stats-panel&quot; title=&quot;Tampilkan data proses&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-chart-simple&quot;&gt;&lt;/i&gt;&lt;span&gt;Data&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;btn-material&quot; class=&quot;action-btn&quot; type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;material-panel&quot; title=&quot;Tampilkan penjelasan pembelajaran&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-book-open&quot;&gt;&lt;/i&gt;&lt;span&gt;Materi&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;button id=&quot;btn-focus&quot; class=&quot;action-btn action-btn-focus&quot; type=&quot;button&quot; title=&quot;Sembunyikan seluruh panel untuk melihat simulasi 3D&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-expand&quot;&gt;&lt;/i&gt;&lt;span&gt;Fokus&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+
+  &lt;!-- Telemetri tidak tampil otomatis, hanya bila tombol Data diklik --&gt;
+  &lt;section id=&quot;stats-panel&quot; class=&quot;stats-panel&quot; aria-label=&quot;Data proses simulasi&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;div class=&quot;floating-panel-header&quot;&gt;&lt;strong&gt;&lt;i class=&quot;fa-solid fa-chart-simple text-cyan-400&quot;&gt;&lt;/i&gt; Data Proses&lt;/strong&gt;
+      &lt;button type=&quot;button&quot; id=&quot;btn-close-stats&quot; class=&quot;panel-close&quot; aria-label=&quot;Tutup data proses&quot;&gt;&lt;i class=&quot;fa-solid fa-xmark&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;stats-items font-mono-code&quot;&gt;
+      &lt;!-- Active Process --&gt;
+      &lt;div class=&quot;bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5&quot;&gt;
+        &lt;span class=&quot;text-slate-400 text-[10px]&quot;&gt;PROSES:&lt;/span&gt;
+        &lt;span id=&quot;hud-process&quot; class=&quot;font-bold text-cyan-400&quot;&gt;PENGIKIRAN&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Stroke Phase Indicator --&gt;
+      &lt;div class=&quot;flex items-center gap-1.5 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl&quot;&gt;
+        &lt;span class=&quot;relative flex h-2 w-2&quot;&gt;
+          &lt;span id=&quot;phase-ping&quot; class=&quot;animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75&quot;&gt;&lt;/span&gt;
+          &lt;span id=&quot;phase-dot&quot; class=&quot;relative inline-flex rounded-full h-2 w-2 bg-emerald-500&quot;&gt;&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;text-slate-400 text-[10px]&quot;&gt;FASE:&lt;/span&gt;
+        &lt;span id=&quot;hud-phase&quot; class=&quot;font-semibold text-emerald-400&quot;&gt;MAJU (POTONG)&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Stroke / Cycle Counter --&gt;
+      &lt;div class=&quot;bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl&quot;&gt;
+        &lt;span id=&quot;hud-cycle-label&quot; class=&quot;text-slate-400 text-[10px]&quot;&gt;LANGKAH:&lt;/span&gt;
+        &lt;span id=&quot;hud-strokes&quot; class=&quot;font-bold text-white ml-1&quot;&gt;0&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Erosion / Depth --&gt;
+      &lt;div class=&quot;bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl&quot;&gt;
+        &lt;span id=&quot;hud-depth-label&quot; class=&quot;text-slate-400 text-[10px]&quot;&gt;TERKIKIS:&lt;/span&gt;
+        &lt;span id=&quot;hud-eroded&quot; class=&quot;font-bold text-amber-400 ml-1&quot;&gt;0.000 mm&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Surface Roughness / Tolerance --&gt;
+      &lt;div class=&quot;bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl hidden sm:block&quot;&gt;
+        &lt;span id=&quot;hud-ra-label&quot; class=&quot;text-slate-400 text-[10px]&quot;&gt;KEKASARAN Ra:&lt;/span&gt;
+        &lt;span id=&quot;hud-ra&quot; class=&quot;font-bold text-cyan-300 ml-1&quot;&gt;3.60 µm&lt;/span&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;button type=&quot;button&quot; id=&quot;btn-exit-focus&quot; class=&quot;exit-focus&quot; aria-label=&quot;Tampilkan kembali menu&quot; title=&quot;Keluar dari mode fokus&quot;&gt;
+    &lt;i class=&quot;fa-solid fa-compress&quot;&gt;&lt;/i&gt;&lt;span&gt;Tampilkan Menu&lt;/span&gt;
+  &lt;/button&gt;
+
+  &lt;!-- Left Floating Control Panel (4 Benchwork Modes &amp; Sub-Parameters) --&gt;
+  &lt;aside id=&quot;settings-drawer&quot; class=&quot;settings-drawer&quot; aria-label=&quot;Pengaturan simulasi&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;div class=&quot;floating-panel-header drawer-heading&quot;&gt;
+      &lt;strong&gt;&lt;i class=&quot;fa-solid fa-sliders text-cyan-400&quot;&gt;&lt;/i&gt; Pengaturan Proses&lt;/strong&gt;
+      &lt;button id=&quot;btn-close-settings&quot; type=&quot;button&quot; class=&quot;panel-close&quot; aria-label=&quot;Tutup pengaturan&quot;&gt;&lt;i class=&quot;fa-solid fa-xmark&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Sub-Parameters Panel: 1. FILING --&gt;
+    &lt;div id=&quot;subpanel-filing&quot; class=&quot;space-y-1.5 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80&quot;&gt;
+      &lt;div class=&quot;flex items-center justify-between&quot;&gt;
+        &lt;label class=&quot;font-medium text-slate-300&quot;&gt;Sudut Arah Kikir&lt;/label&gt;
+        &lt;div class=&quot;flex items-center gap-1&quot;&gt;
+          &lt;span id=&quot;lbl-tech-angle&quot; class=&quot;text-amber-400 font-mono-code font-semibold text-[11px]&quot;&gt;Lurus 0° (Putar 90°)&lt;/span&gt;
+          &lt;button id=&quot;btn-rotate-90&quot; title=&quot;Putar arah pengikiran +90 derajat&quot; class=&quot;px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 text-[10px] font-mono-code transition active:scale-95&quot;&gt;
+            +90°
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;grid grid-cols-3 gap-1.5 pt-0.5&quot;&gt;
+        &lt;button id=&quot;tech-straight&quot; class=&quot;tech-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[11px] text-center&quot;&gt;
+          Lurus 0°
+        &lt;/button&gt;
+        &lt;button id=&quot;tech-cross45&quot; class=&quot;tech-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[11px] text-center&quot;&gt;
+          Silang 45°
+        &lt;/button&gt;
+        &lt;button id=&quot;tech-cross60&quot; class=&quot;tech-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[11px] text-center&quot;&gt;
+          Silang 60°
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Sub-Parameters Panel: 2. CHISELING --&gt;
+    &lt;div id=&quot;subpanel-chiseling&quot; class=&quot;hidden space-y-1.5 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80&quot;&gt;
+      &lt;div class=&quot;flex items-center justify-between&quot;&gt;
+        &lt;label class=&quot;font-medium text-slate-300&quot;&gt;Kemiringan Pahat dari Permukaan&lt;/label&gt;
+        &lt;span id=&quot;lbl-chisel-angle&quot; class=&quot;text-amber-400 font-mono-code font-semibold text-[11px]&quot;&gt;32° (terhadap bidang)&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;grid grid-cols-3 gap-1.5 pt-0.5&quot;&gt;
+        &lt;button data-chisel=&quot;28&quot; class=&quot;chisel-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Landai 28°
+        &lt;/button&gt;
+        &lt;button data-chisel=&quot;32&quot; class=&quot;chisel-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&quot;&gt;
+          Ideal 32°
+        &lt;/button&gt;
+        &lt;button data-chisel=&quot;38&quot; class=&quot;chisel-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Curam 38°
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Sub-Parameters Panel: 3. SAWING --&gt;
+    &lt;div id=&quot;subpanel-sawing&quot; class=&quot;hidden space-y-1.5 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80&quot;&gt;
+      &lt;div class=&quot;flex items-center justify-between&quot;&gt;
+        &lt;label class=&quot;font-medium text-slate-300&quot;&gt;Posisi Celah Gergaji (Kerf)&lt;/label&gt;
+        &lt;span id=&quot;lbl-saw-pos&quot; class=&quot;text-amber-400 font-mono-code font-semibold text-[11px]&quot;&gt;Tengah (0 mm)&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;grid grid-cols-3 gap-1.5 pt-0.5&quot;&gt;
+        &lt;button data-sawpos=&quot;-0.06&quot; class=&quot;sawpos-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Sisi Kiri
+        &lt;/button&gt;
+        &lt;button data-sawpos=&quot;0&quot; class=&quot;sawpos-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&quot;&gt;
+          Tengah
+        &lt;/button&gt;
+        &lt;button data-sawpos=&quot;0.06&quot; class=&quot;sawpos-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Sisi Kanan
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Sub-Parameters Panel: 4. DRILLING --&gt;
+    &lt;div id=&quot;subpanel-drilling&quot; class=&quot;hidden space-y-1.5 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80&quot;&gt;
+      &lt;div class=&quot;flex items-center justify-between&quot;&gt;
+        &lt;label class=&quot;font-medium text-slate-300&quot;&gt;Diameter Mata Bor&lt;/label&gt;
+        &lt;span id=&quot;lbl-drill-dia&quot; class=&quot;text-amber-400 font-mono-code font-semibold text-[11px]&quot;&gt;Ø 10.0 mm&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;grid grid-cols-3 gap-1.5 pt-0.5&quot;&gt;
+        &lt;button data-drilldia=&quot;0.75&quot; class=&quot;drilldia-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Ø 6 mm
+        &lt;/button&gt;
+        &lt;button data-drilldia=&quot;1.0&quot; class=&quot;drilldia-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&quot;&gt;
+          Ø 10 mm
+        &lt;/button&gt;
+        &lt;button data-drilldia=&quot;1.3&quot; class=&quot;drilldia-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&quot;&gt;
+          Ø 13 mm
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Speed Slider (SPM / RPM) --&gt;
+    &lt;div class=&quot;space-y-1&quot;&gt;
+      &lt;div class=&quot;flex justify-between items-center text-slate-300 font-medium&quot;&gt;
+        &lt;span id=&quot;lbl-speed-title&quot;&gt;Kecepatan Langkah&lt;/span&gt;
+        &lt;span id=&quot;val-spm&quot; class=&quot;font-mono-code text-cyan-400 font-semibold&quot;&gt;45 SPM&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;input id=&quot;slider-spm&quot; type=&quot;range&quot; min=&quot;20&quot; max=&quot;80&quot; value=&quot;45&quot; step=&quot;1&quot; 
+             class=&quot;w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500&quot;&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Normal Force / Feed Slider --&gt;
+    &lt;div class=&quot;space-y-1&quot;&gt;
+      &lt;div class=&quot;flex justify-between items-center text-slate-300 font-medium&quot;&gt;
+        &lt;span id=&quot;lbl-force-title&quot;&gt;Gaya Tekan / Pemakanan (Fn)&lt;/span&gt;
+        &lt;span id=&quot;val-force&quot; class=&quot;font-mono-code text-cyan-400 font-semibold&quot;&gt;80 N&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;input id=&quot;slider-force&quot; type=&quot;range&quot; min=&quot;20&quot; max=&quot;150&quot; value=&quot;80&quot; step=&quot;5&quot; 
+             class=&quot;w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500&quot;&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Workpiece Status Box --&gt;
+    &lt;div class=&quot;p-2.5 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-1.5&quot;&gt;
+      &lt;div class=&quot;text-[10px] font-semibold text-slate-300 uppercase tracking-wider flex items-center justify-between&quot;&gt;
+        &lt;span&gt;Progres Pengerjaan Material&lt;/span&gt;
+        &lt;span class=&quot;text-[11px] text-amber-400&quot;&gt;&lt;i class=&quot;fa-solid fa-cube mr-1&quot;&gt;&lt;/i&gt;Kuningan (#f59e0b)&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;w-full bg-slate-800 h-2 rounded-full overflow-hidden&quot;&gt;
+        &lt;div id=&quot;prog-eroded&quot; class=&quot;bg-gradient-to-r from-amber-500 to-emerald-400 h-full w-[0%] transition-all duration-200&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;flex justify-between text-[10px] text-slate-400 font-mono-code&quot;&gt;
+        &lt;span&gt;Ukuran/Sisa: &lt;b id=&quot;lbl-height&quot; class=&quot;text-white&quot;&gt;25.000 mm&lt;/b&gt;&lt;/span&gt;
+        &lt;span&gt;Target: &lt;b id=&quot;lbl-target-max&quot;&gt;2.00 mm&lt;/b&gt;&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Action Buttons --&gt;
+    &lt;div class=&quot;grid grid-cols-2 gap-2&quot;&gt;
+      &lt;button id=&quot;btn-reset&quot; class=&quot;py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-medium transition flex items-center justify-center gap-1.5&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-rotate-left text-amber-400&quot;&gt;&lt;/i&gt; Reset Benda
+      &lt;/button&gt;
+      &lt;button id=&quot;btn-camera-view&quot; class=&quot;py-2 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-medium transition flex items-center justify-center gap-1.5&quot;&gt;
+        &lt;i class=&quot;fa-solid fa-video text-cyan-400&quot;&gt;&lt;/i&gt; Fokus Alat
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/aside&gt;
+
+  &lt;!-- Keterangan proses sengaja disimpan di panel lipat agar tidak menutup model --&gt;
+  &lt;section id=&quot;material-panel&quot; class=&quot;material-panel&quot; aria-hidden=&quot;true&quot; aria-label=&quot;Materi proses kerja&quot;&gt;
+    &lt;div class=&quot;floating-panel-header&quot;&gt;
+      &lt;strong&gt;&lt;i class=&quot;fa-solid fa-book-open text-amber-400&quot;&gt;&lt;/i&gt; Penjelasan Proses&lt;/strong&gt;
+      &lt;button type=&quot;button&quot; id=&quot;btn-close-material&quot; class=&quot;panel-close&quot; aria-label=&quot;Tutup materi&quot;&gt;&lt;i class=&quot;fa-solid fa-xmark&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;material-content&quot;&gt;
+      &lt;div class=&quot;flex items-start gap-3&quot;&gt;
+        &lt;div id=&quot;edu-icon-box&quot; class=&quot;w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5&quot;&gt;
+          &lt;i id=&quot;edu-icon&quot; class=&quot;fa-solid fa-book-open&quot;&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;space-y-0.5&quot;&gt;
+          &lt;div class=&quot;flex flex-wrap items-center gap-2&quot;&gt;
+            &lt;h2 id=&quot;edu-title&quot; class=&quot;text-xs md:text-sm font-bold text-white&quot;&gt;1. Materi Pengikiran (Filing)&lt;/h2&gt;
+            &lt;span id=&quot;edu-badge&quot; class=&quot;text-[10px] font-mono-code px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30&quot;&gt;Sudut Gigi: Rake Positif • Langkah Maju Memotong&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;p id=&quot;edu-desc&quot; class=&quot;text-[11px] text-slate-300 leading-relaxed&quot;&gt;
+            Kikir meratakan dan menyiku bidang benda kerja. Tekanan tangan diberikan penuh saat &lt;b&gt;Langkah Maju&lt;/b&gt; untuk mengikis beram, dan dilepaskan (terangkat 1–2 mm) saat &lt;b&gt;Langkah Mundur&lt;/b&gt; agar gigi kikir tidak tumpul. Gunakan kacamata pelindung dan bersihkan kikir dengan sikat kawat.
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+    &lt;div class=&quot;material-hint&quot;&gt;&lt;i class=&quot;fa-solid fa-computer-mouse&quot;&gt;&lt;/i&gt; Putar: geser · Zoom: scroll / cubit · Geser posisi: klik kanan&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- Notification Toast Container --&gt;
+  &lt;div id=&quot;toast&quot; class=&quot;fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-cyan-500/50 text-cyan-300 px-4 py-2 rounded-xl shadow-2xl text-xs font-medium opacity-0 transition-opacity duration-300 pointer-events-none&quot;&gt;
+    Notifikasi
+  &lt;/div&gt;
+
+  &lt;!-- Main JavaScript Logic --&gt;
+  &lt;script&gt;
+    // --- Data Materi Edukasi 4 Proses Kerja Bangku ---
+    const BENCHWORK_INFO = {
+      filing: {
+        hudName: &#x27;PENGIKIRAN&#x27;,
+        title: &#x27;1. Materi Pengikiran (Filing)&#x27;,
+        badge: &#x27;Sudut Lurus 0° (Putar 90°), Silang 45° &amp; 60° • Langkah Maju Memotong&#x27;,
+        desc: &#x27;Pengikiran meratakan dan menghaluskan permukaan benda kerja menggunakan kikir tangan. Gaya tekan diterapkan saat Langkah Maju, sedangkan saat Langkah Mundur kikir diangkat tipis (1–2 mm) agar gigi kikir tidak aus. K3: Pastikan gagang kikir terpasang rapat dan jangan meniup beram dengan mulut.&#x27;,
+        icon: &#x27;fa-solid fa-grip-lines&#x27;,
+        cycleLabel: &#x27;LANGKAH:&#x27;,
+        depthLabel: &#x27;TERKIKIS:&#x27;,
+        raLabel: &#x27;KEKASARAN Ra:&#x27;
+      },
+      chiseling: {
+        hudName: &#x27;PEMAHATAN (CHISEL)&#x27;,
+        title: &#x27;2. Pemahatan Alur (Crosscut / Cape Chisel)&#x27;,
+        badge: &#x27;Mata pahat sempit • Arah pahat memanjang alur • Kemiringan terhadap permukaan 28°–38°&#x27;,
+        desc: &#x27;Crosscut chisel (cape chisel / pahat alur) memiliki mata potong sempit untuk membuat alur lurus, celah, atau alur pasak. Dalam simulasi ini ujung pahat menempel pada permukaan atas benda kerja, batang miring ke belakang arah pemotongan, dan palu memukul tepat pada kepala pahat searah sumbunya. Setiap pukulan memperpanjang alur ke depan. K3: Gunakan kacamata keselamatan, jepit benda dengan kuat, dan jangan gunakan kepala pahat yang mengembang atau retak.&#x27;,
+        icon: &#x27;fa-solid fa-gavel&#x27;,
+        cycleLabel: &#x27;PUKULAN:&#x27;,
+        depthLabel: &#x27;DALAM ALUR:&#x27;,
+        raLabel: &#x27;TEBAL TATAL:&#x27;
+      },
+      sawing: {
+        hudName: &#x27;PENGGERGAJIAN (SAWING)&#x27;,
+        title: &#x27;3. Materi Penggergajian (Sawing - Hacksaw)&#x27;,
+        badge: &#x27;Arah Gigi: Menghadap Depan • Kecepatan Ideal: 40–50 Langkah/Menit&#x27;,
+        desc: &#x27;Gergaji besi (hacksaw) memotong material dengan daun gergaji yang dipasang tegang menghadap ke depan. Tekanan pemotongan hanya diberikan pada langkah dorong maju, dan diangkat ringan saat langkah tarik mundur. K3: Gunakan minimal 3 gigi gergaji yang menumpu pada benda kerja dan kurangi tekanan saat hampir putus.&#x27;,
+        icon: &#x27;fa-solid fa-bacon&#x27;,
+        cycleLabel: &#x27;LANGKAH:&#x27;,
+        depthLabel: &#x27;DALAM POTONG:&#x27;,
+        raLabel: &#x27;LEBAR CELAH:&#x27;
+      },
+      drilling: {
+        hudName: &#x27;PENGEBORAN (DRILLING)&#x27;,
+        title: &#x27;4. Materi Pengeboran (Drilling - Twist Drill Bit)&#x27;,
+        badge: &#x27;Sudut Puncak Mata Bor: 118° • Gerak Putar Utama + Pemakanan Aksial&#x27;,
+        desc: &#x27;Pengeboran membuat lubang silindris menggunakan mata bor spiral (twist drill). Sebelum mengebor, titik pusat wajib ditandai dengan penitik (center punch) agar mata bor tidak meleset. Beram spiral keluar melalui alur heliks (flute). K3: Jepit benda kerja kuat pada tanggem, gunakan cairan pendingin (coolant), dan dilarang memakai sarung tangan kain di dekat poros berputar.&#x27;,
+        icon: &#x27;fa-solid fa-bore-hole&#x27;,
+        cycleLabel: &#x27;PUTARAN:&#x27;,
+        depthLabel: &#x27;DALAM LUBANG:&#x27;,
+        raLabel: &#x27;DIAMETER:&#x27;
+      }
+    };
+
+    // --- State Simulasi Terpadu ---
+    const state = {
+      processMode: &#x27;filing&#x27;, // &#x27;filing&#x27; | &#x27;chiseling&#x27; | &#x27;sawing&#x27; | &#x27;drilling&#x27;
+      isPlaying: true,
+      spm: 45, // Stroke Per Minute (20-80) atau skala RPM bor
+      forceN: 80, // Gaya Tekan / Pemakanan (20-150 N)
+      
+      // Sub-state Filing
+      angleMode: &#x27;straight&#x27;, // &#x27;straight&#x27; (-90 deg), &#x27;cross45&#x27; (-45 deg), &#x27;cross60&#x27; (-60 deg)
+      baseAngleDegrees: -90,
+      extraRotation90: 0,
+      angleDegrees: -90,
+
+      // Sub-state Chiseling
+      chiselAngleDeg: 32, // 28 | 32 | 38
+      chiselProgressX: -0.105,
+
+      // Sub-state Sawing
+      sawPosX: 0.0, // -0.06 | 0 | 0.06
+      sawDepthMm: 0.0,
+
+      // Sub-state Drilling
+      drillDiameterScale: 1.0, // 0.75 (6mm) | 1.0 (10mm) | 1.3 (13mm)
+      drillDepthMm: 0.0,
+
+      // Telemetri Umum
+      strokePhase: &#x27;forward&#x27;,
+      strokeCount: 0,
+      initialHeight: 25.0, // mm
+      erodedMm: 0.0,
+      maxErosion: 2.0, // mm
+      surfaceRa: 3.6,
+      cycleTime: 0
+    };
+
+    // --- Inisialisasi Three.js Setup ---
+    const container = document.getElementById(&#x27;canvas-container&#x27;);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1e293b);
+    scene.fog = new THREE.FogExp2(0x1e293b, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0.95, 0.82, 1.28);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: &quot;high-performance&quot; });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 - 0.01; // Tidak tembus meja
+    controls.minDistance = 0.6;
+    controls.maxDistance = 8.0;
+    controls.target.set(0, 0.39, -0.01);
+
+    // --- Pencahayaan Workshop Cerah &amp; Kontras Tinggi ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const hemiLight = new THREE.HemisphereLight(0xf8fafc, 0x334155, 0.65);
+    hemiLight.position.set(0, 6, 0);
+    scene.add(hemiLight);
+
+    // Lampu Utama Atas (Studio Spot)
+    const mainSpot = new THREE.SpotLight(0xffffff, 2.2, 18, Math.PI / 3, 0.35, 1);
+    mainSpot.position.set(2.2, 4.5, 2.8);
+    mainSpot.castShadow = true;
+    mainSpot.shadow.mapSize.width = 2048;
+    mainSpot.shadow.mapSize.height = 2048;
+    mainSpot.shadow.camera.near = 0.5;
+    mainSpot.shadow.camera.far = 12;
+    mainSpot.shadow.bias = -0.0005;
+    scene.add(mainSpot);
+
+    // Lampu Aksen Samping (Cahaya Terang Kontras)
+    const rimLight = new THREE.DirectionalLight(0xe0f2fe, 1.1);
+    rimLight.position.set(-3, 2.5, -2);
+    scene.add(rimLight);
+
+    // Lampu Hangat Aksen Depan Meja
+    const warmFill = new THREE.DirectionalLight(0xfef3c7, 0.7);
+    warmFill.position.set(1.5, 1.5, 3);
+    scene.add(warmFill);
+
+    // --- Pembuat Tekstur Prosedural Dinamis (Canvas 2D -&gt; Three Texture) ---
+    // 1. Tekstur Gigi Kikir Rata (Cross-Cut File Pattern Kontras Tinggi)
+    function createCrossCutFileTexture() {
+      const c = document.createElement(&#x27;canvas&#x27;);
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext(&#x27;2d&#x27;);
+      ctx.fillStyle = &#x27;#cbd5e1&#x27;;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Garis potong pertama (overcut)
+      ctx.strokeStyle = &#x27;#1e293b&#x27;;
+      ctx.lineWidth = 3.0;
+      for (let i = -512; i &lt; 1024; i += 8) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + 512, 512);
+        ctx.stroke();
+      }
+      // Garis potong kedua (upcut menyilang)
+      ctx.strokeStyle = &#x27;#0f172a&#x27;;
+      ctx.lineWidth = 2.0;
+      for (let i = -512; i &lt; 1024; i += 10) {
+        ctx.beginPath();
+        ctx.moveTo(i + 512, 0);
+        ctx.lineTo(i, 512);
+        ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(3, 18);
+      return tex;
+    }
+
+    // 2. Tekstur Kayu Workbench Terang
+    function createWoodTexture() {
+      const c = document.createElement(&#x27;canvas&#x27;);
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext(&#x27;2d&#x27;);
+      ctx.fillStyle = &#x27;#92400e&#x27;;
+      ctx.fillRect(0, 0, 512, 512);
+      for (let i = 0; i &lt; 450; i++) {
+        ctx.fillStyle = Math.random() &gt; 0.5 ? &#x27;#b45309&#x27; : &#x27;#78350f&#x27;;
+        ctx.fillRect(0, Math.random() * 512, 512, Math.random() * 4);
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      return tex;
+    }
+
+    // 3. Tekstur Dinamis Permukaan Atas Material (Menampilkan Jejak Goresan Pengikiran)
+    const workSurfaceCanvas = document.createElement(&#x27;canvas&#x27;);
+    workSurfaceCanvas.width = 512;
+    workSurfaceCanvas.height = 256;
+    const workSurfaceCtx = workSurfaceCanvas.getContext(&#x27;2d&#x27;);
+    const workSurfaceTex = new THREE.CanvasTexture(workSurfaceCanvas);
+
+    function resetWorkSurfaceTexture() {
+      // Warna dasar kuningan/emas cerah sebelum tergores dalam
+      workSurfaceCtx.fillStyle = &#x27;#fbbf24&#x27;;
+      workSurfaceCtx.fillRect(0, 0, 512, 256);
+      // Garis tekstur gilingan awal tipis
+      workSurfaceCtx.strokeStyle = &#x27;rgba(217, 119, 6, 0.35)&#x27;;
+      workSurfaceCtx.lineWidth = 2;
+      for (let y = 0; y &lt; 256; y += 6) {
+        workSurfaceCtx.beginPath();
+        workSurfaceCtx.moveTo(0, y);
+        workSurfaceCtx.lineTo(512, y);
+        workSurfaceCtx.stroke();
+      }
+      workSurfaceTex.needsUpdate = true;
+    }
+
+    // Jejak alur lurus yang sejajar dengan langkah crosscut chisel sepanjang sumbu X.
+    // Lebar jejak dibatasi mengikuti mata pahat sempit, bukan selebar flat chisel.
+    function drawChiselGrooveOnSurface(progress01) {
+      const ctx = workSurfaceCtx;
+      const x1 = Math.round(512 * (0.025 / workpieceWidth)); // batas awal sekitar X=-0.105
+      const x2 = Math.round(x1 + 512 * (0.210 / workpieceWidth) * THREE.MathUtils.clamp(progress01, 0, 1));
+      const len = Math.max(0, x2 - x1);
+      if (len &lt;= 0) return;
+      const centerZ = 128;
+      const halfWidth = 24; // alur lebih sempit daripada tebal benda kerja
+      ctx.save();
+      // Bibir alur: garis cahaya tipis, dasar alur lebih gelap untuk efek kedalaman.
+      ctx.fillStyle = &#x27;#713f12&#x27;;
+      ctx.fillRect(x1, centerZ-halfWidth-5, len, halfWidth*2+10);
+      ctx.fillStyle = &#x27;#273244&#x27;;
+      ctx.fillRect(x1, centerZ-halfWidth, len, halfWidth*2);
+      ctx.fillStyle = &#x27;#64748b&#x27;;
+      ctx.fillRect(x1+2, centerZ-halfWidth+6, Math.max(0,len-2), halfWidth*2-12);
+      ctx.strokeStyle = &#x27;#fff1ae&#x27;;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, centerZ-halfWidth-5);
+      ctx.lineTo(x2, centerZ-halfWidth-5);
+      ctx.moveTo(x1, centerZ+halfWidth+5);
+      ctx.lineTo(x2, centerZ+halfWidth+5);
+      ctx.stroke();
+      ctx.strokeStyle = &#x27;rgba(15,23,42,0.35)&#x27;;
+      ctx.lineWidth = 1.3;
+      for (let x=x1+8; x&lt;x2; x+=12) {
+        ctx.beginPath();
+        ctx.moveTo(x, centerZ-halfWidth+7);
+        ctx.lineTo(x-3, centerZ+halfWidth-7);
+        ctx.stroke();
+      }
+      ctx.restore();
+      workSurfaceTex.needsUpdate = true;
+    }
+
+    function drawSawKerfOnSurface(posXWorld, depthRatio) {
+      workSurfaceCtx.save();
+      // Konversi posisi X (-0.06..0.06) ke X kanvas (0..512)
+      const u = 256 + (posXWorld / 0.13) * 128;
+      const kerfWidth = 10 + depthRatio * 4;
+      workSurfaceCtx.fillStyle = &#x27;#0f172a&#x27;;
+      workSurfaceCtx.fillRect(u - kerfWidth / 2, 0, kerfWidth, 256);
+      // Tepi celah gergajian perak terang
+      workSurfaceCtx.strokeStyle = &#x27;#e2e8f0&#x27;;
+      workSurfaceCtx.lineWidth = 2;
+      workSurfaceCtx.strokeRect(u - kerfWidth / 2, 0, kerfWidth, 256);
+      workSurfaceCtx.restore();
+      workSurfaceTex.needsUpdate = true;
+    }
+
+    function drawDrillHoleOnSurface(diaScale, depthRatio) {
+      workSurfaceCtx.save();
+      const radius = (28 * diaScale) * Math.min(1, 0.35 + depthRatio * 0.65);
+      // Chamfer bibir lubang bor perak mengilap
+      workSurfaceCtx.beginPath();
+      workSurfaceCtx.arc(256, 128, radius + 6, 0, Math.PI * 2);
+      workSurfaceCtx.fillStyle = &#x27;#e2e8f0&#x27;;
+      workSurfaceCtx.fill();
+
+      // Lubang gelap dalam
+      workSurfaceCtx.beginPath();
+      workSurfaceCtx.arc(256, 128, radius, 0, Math.PI * 2);
+      workSurfaceCtx.fillStyle = &#x27;#090d16&#x27;;
+      workSurfaceCtx.fill();
+
+      // Lingkaran kerucut dasar bor
+      workSurfaceCtx.beginPath();
+      workSurfaceCtx.arc(256, 128, radius * 0.45, 0, Math.PI * 2);
+      workSurfaceCtx.strokeStyle = &#x27;#64748b&#x27;;
+      workSurfaceCtx.lineWidth = 2;
+      workSurfaceCtx.stroke();
+      workSurfaceCtx.restore();
+      workSurfaceTex.needsUpdate = true;
+    }
+
+    resetWorkSurfaceTexture();
+
+    const fileTexture = createCrossCutFileTexture();
+    const woodTexture = createWoodTexture();
+
+    // --- Pembuatan Komponen 3D Lingkungan &amp; Peralatan ---
+
+    // 1. Lantai Bengkel &amp; Meja Kerja
+    const floorGeo = new THREE.PlaneGeometry(14, 14);
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9, metalness: 0.1 });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.7;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // Top Meja Kerja
+    const tableTopGeo = new THREE.BoxGeometry(2.4, 0.12, 1.4);
+    const tableTopMat = new THREE.MeshStandardMaterial({
+      map: woodTexture,
+      roughness: 0.65,
+      metalness: 0.05
+    });
+    const tableTop = new THREE.Mesh(tableTopGeo, tableTopMat);
+    tableTop.position.set(0, -0.06, 0);
+    tableTop.receiveShadow = true;
+    tableTop.castShadow = true;
+    scene.add(tableTop);
+
+    // Kaki Meja Besi
+    const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.64, 16);
+    const legMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4, metalness: 0.8 });
+    const legPositions = [
+      [-1.1, -0.38, -0.6],
+      [1.1, -0.38, -0.6],
+      [-1.1, -0.38, 0.6],
+      [1.1, -0.38, 0.6]
+    ];
+    legPositions.forEach(pos =&gt; {
+      const leg = new THREE.Mesh(legGeo, legMat);
+      leg.position.set(...pos);
+      leg.castShadow = true;
+      scene.add(leg);
+    });
+
+    // 2. Tanggem / Ragum Meja (Bench Vise) dengan Warna Biru Mesin Kontras Tinggi
+    const viseGroup = new THREE.Group();
+    scene.add(viseGroup);
+
+    // Warna Biru Industri Khas Tanggem Bengkel agar kontras jelas dengan benda kerja &amp; kikir
+    const castIronMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      roughness: 0.38,
+      metalness: 0.35
+    });
+    // Rahang penjepit baja hitam keras
+    const jawPlateSteelMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      roughness: 0.3,
+      metalness: 0.85
+    });
+    // Spindel ulir dan tuas krom mengilap
+    const polishedSteelMat = new THREE.MeshStandardMaterial({
+      color: 0xf1f5f9,
+      roughness: 0.18,
+      metalness: 0.92
+    });
+
+    // Dudukan Ragum (Swivel Base)
+    const baseGeo = new THREE.CylinderGeometry(0.24, 0.28, 0.05, 32);
+    const baseMesh = new THREE.Mesh(baseGeo, castIronMat);
+    baseMesh.position.y = 0.025;
+    baseMesh.receiveShadow = true;
+    baseMesh.castShadow = true;
+    viseGroup.add(baseMesh);
+
+    // Bodi Tetap Ragum (Fixed Body)
+    const fixedBodyGeo = new THREE.BoxGeometry(0.28, 0.22, 0.32);
+    const fixedBody = new THREE.Mesh(fixedBodyGeo, castIronMat);
+    fixedBody.position.set(0, 0.14, -0.06);
+    fixedBody.castShadow = true;
+    viseGroup.add(fixedBody);
+
+    // Rahang Tetap (Fixed Jaw)
+    const fixedJawGeo = new THREE.BoxGeometry(0.32, 0.14, 0.12);
+    const fixedJaw = new THREE.Mesh(fixedJawGeo, castIronMat);
+    fixedJaw.position.set(0, 0.3, -0.1);
+    fixedJaw.castShadow = true;
+    viseGroup.add(fixedJaw);
+
+    // Pelat Baja Penjepit Belakang
+    const jawPlateGeo = new THREE.BoxGeometry(0.3, 0.06, 0.015);
+    const rearPlate = new THREE.Mesh(jawPlateGeo, jawPlateSteelMat);
+    rearPlate.position.set(0, 0.31, -0.04);
+    rearPlate.castShadow = true;
+    viseGroup.add(rearPlate);
+
+    // Rahang Geser (Movable Jaw)
+    const movableJawGeo = new THREE.BoxGeometry(0.32, 0.14, 0.12);
+    const movableJaw = new THREE.Mesh(movableJawGeo, castIronMat);
+    movableJaw.position.set(0, 0.3, 0.08);
+    movableJaw.castShadow = true;
+    viseGroup.add(movableJaw);
+
+    // Pelat Baja Penjepit Depan
+    const frontPlate = new THREE.Mesh(jawPlateGeo, jawPlateSteelMat);
+    frontPlate.position.set(0, 0.31, 0.02);
+    frontPlate.castShadow = true;
+    viseGroup.add(frontPlate);
+
+    // Batang Silinder Rel Bawah Rahang Geser
+    const slideBarGeo = new THREE.BoxGeometry(0.12, 0.1, 0.35);
+    const slideBar = new THREE.Mesh(slideBarGeo, polishedSteelMat);
+    slideBar.position.set(0, 0.14, 0.08);
+    slideBar.castShadow = true;
+    viseGroup.add(slideBar);
+
+    // Ulir Transmisi (Lead Screw Shaft)
+    const screwGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.42, 16);
+    const screwMesh = new THREE.Mesh(screwGeo, polishedSteelMat);
+    screwMesh.rotation.x = Math.PI / 2;
+    screwMesh.position.set(0, 0.14, 0.22);
+    screwMesh.castShadow = true;
+    viseGroup.add(screwMesh);
+
+    // Kepala Ulir &amp; Tuas Putar Ragum
+    const handleHubGeo = new THREE.CylinderGeometry(0.038, 0.038, 0.06, 16);
+    const handleHub = new THREE.Mesh(handleHubGeo, polishedSteelMat);
+    handleHub.rotation.x = Math.PI / 2;
+    handleHub.position.set(0, 0.14, 0.38);
+    handleHub.castShadow = true;
+    viseGroup.add(handleHub);
+
+    const leverRodGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.34, 16);
+    const leverRod = new THREE.Mesh(leverRodGeo, polishedSteelMat);
+    leverRod.position.set(0, 0.14, 0.41);
+    leverRod.rotation.z = Math.PI / 4;
+    leverRod.castShadow = true;
+    viseGroup.add(leverRod);
+
+    // 3. Benda Kerja / Material (Workpiece) Warna Kuningan/Emas Terang Kontras Tinggi
+    // Terjepit kuat di antara pelat baja tanggem dan menonjol jelas di atas rahang
+    const workpieceWidth = 0.26;
+    const workpieceThickness = 0.046; // dijepit rapat
+    const workpieceInitialHeight = 0.15; // lebih tinggi agar sangat jelas terlihat saat dikikir
+
+    const workpieceGeo = new THREE.BoxGeometry(workpieceWidth, workpieceInitialHeight, workpieceThickness);
+    // Material logam kuningan/emas cerah supaya sangat kontras dengan tanggem biru dan kikir baja
+    const workpieceMat = new THREE.MeshStandardMaterial({
+      color: 0xf59e0b,
+      metalness: 0.65,
+      roughness: 0.25
+    });
+    const workpiece = new THREE.Mesh(workpieceGeo, workpieceMat);
+    const workpieceBaseY = 0.31;
+    workpiece.position.set(0, workpieceBaseY, -0.01);
+    workpiece.castShadow = true;
+    workpiece.receiveShadow = true;
+    scene.add(workpiece);
+
+    // Garis Referensi Batas Tinggi Awal Material (sebelum terkikis) agar pengurangan ketebalan terlihat jelas
+    const refEdgesGeo = new THREE.EdgesGeometry(workpieceGeo);
+    const refEdgesMat = new THREE.LineBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.55
+    });
+    const refHeightWireframe = new THREE.LineSegments(refEdgesGeo, refEdgesMat);
+    refHeightWireframe.position.copy(workpiece.position);
+    scene.add(refHeightWireframe);
+
+    // Permukaan Atas Benda Kerja yang menampilkan goresan pengikiran secara real-time
+    const topSurfaceGeo = new THREE.PlaneGeometry(workpieceWidth, workpieceThickness);
+    const topSurfaceMat = new THREE.MeshStandardMaterial({
+      map: workSurfaceTex,
+      metalness: 0.75,
+      roughness: 0.22,
+      polygonOffset: true,
+      polygonOffsetFactor: -1
+    });
+    const topSurfaceMesh = new THREE.Mesh(topSurfaceGeo, topSurfaceMat);
+    topSurfaceMesh.rotation.x = -Math.PI / 2;
+    topSurfaceMesh.position.set(0, workpieceBaseY + workpieceInitialHeight / 2 + 0.0006, -0.01);
+    scene.add(topSurfaceMesh);
+
+    // 4. Kikir Tangan Rata (Hand File Assembly)
+    const fileAssembly = new THREE.Group();
+    scene.add(fileAssembly);
+
+    // Bilah Kikir Baja (Blade)
+    const bladeLength = 0.72;
+    const bladeWidth = 0.07;
+    const bladeThickness = 0.018;
+    const bladeGeo = new THREE.BoxGeometry(bladeWidth, bladeThickness, bladeLength);
+    const bladeMat = new THREE.MeshStandardMaterial({
+      map: fileTexture,
+      bumpMap: fileTexture,
+      bumpScale: 0.018,
+      metalness: 0.65,
+      roughness: 0.35,
+      color: 0xe2e8f0
+    });
+    const bladeMesh = new THREE.Mesh(bladeGeo, bladeMat);
+    bladeMesh.castShadow = true;
+    bladeMesh.receiveShadow = true;
+    fileAssembly.add(bladeMesh);
+
+    // Ujung Depan Kikir (Point / Tip Chamfer)
+    const tipGeo = new THREE.ConeGeometry(0.035, 0.06, 4);
+    const tipMesh = new THREE.Mesh(tipGeo, bladeMat);
+    tipMesh.rotation.y = Math.PI / 4;
+    tipMesh.rotation.x = -Math.PI / 2;
+    tipMesh.position.set(0, 0, -bladeLength / 2 - 0.03);
+    tipMesh.scale.set(1, 1, 0.3);
+    fileAssembly.add(tipMesh);
+
+    // Ferrule Perak/Krom (Ring Penguat Gagang)
+    const ferruleGeo = new THREE.CylinderGeometry(0.025, 0.029, 0.045, 24);
+    const ferruleMat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc,
+      metalness: 0.9,
+      roughness: 0.2
+    });
+    const ferrule = new THREE.Mesh(ferruleGeo, ferruleMat);
+    ferrule.rotation.x = Math.PI / 2;
+    ferrule.position.set(0, 0, bladeLength / 2 + 0.04);
+    ferrule.castShadow = true;
+    fileAssembly.add(ferrule);
+
+    // Gagang Kikir Oranye-Merah Bengkel Terang agar posisi Gagang vs Ujung Kikir langsung terlihat jelas
+    const handleGeo = new THREE.CylinderGeometry(0.028, 0.038, 0.28, 24);
+    const handleMat = new THREE.MeshStandardMaterial({
+      color: 0xea580c,
+      roughness: 0.35,
+      metalness: 0.1
+    });
+    const handle = new THREE.Mesh(handleGeo, handleMat);
+    handle.rotation.x = Math.PI / 2;
+    handle.position.set(0, 0, bladeLength / 2 + 0.19);
+    handle.scale.set(1, 1, 1.1);
+    handle.castShadow = true;
+    fileAssembly.add(handle);
+
+    // 5. Vektor Indikator Gaya Tekan (Downforce Arrow)
+    const arrowGroup = new THREE.Group();
+    fileAssembly.add(arrowGroup);
+    arrowGroup.position.set(0, 0.08, -0.05);
+
+    const arrowShaftGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.16, 16);
+    const arrowConeGeo = new THREE.ConeGeometry(0.03, 0.07, 16);
+    const arrowMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.8,
+      roughness: 0.2
+    });
+    const arrowShaft = new THREE.Mesh(arrowShaftGeo, arrowMat);
+    arrowShaft.position.y = 0.08;
+    const arrowCone = new THREE.Mesh(arrowConeGeo, arrowMat);
+    arrowCone.position.y = 0;
+    arrowCone.rotation.x = Math.PI; // Menunjuk ke bawah (arah tekan)
+    arrowGroup.add(arrowShaft);
+    arrowGroup.add(arrowCone);
+
+    // =========================================================================
+    // ALAT PEMAHATAN: CROSSCUT / CAPE CHISEL + PALU KONDE
+    // =========================================================================
+    const chiselingGroup = new THREE.Group();
+    chiselingGroup.visible = false;
+    scene.add(chiselingGroup);
+
+    // Pahat dipasang dengan TITIK NOL di ujung mata potong (0, 0, 0).
+    // Batang tumbuh ke +Y lokal. Rotasi Z positif membuat batang berada di
+    // BELAKANG arah pemotongan (+X dunia); ujungnya tetap menyentuh material.
+    const chiselTool = new THREE.Group();
+    chiselingGroup.add(chiselTool);
+
+    const chiselMat = new THREE.MeshStandardMaterial({color: 0x475569, roughness: 0.32, metalness: 0.75});
+    const hardenedEdgeMat = new THREE.MeshStandardMaterial({color: 0xe2e8f0, roughness: 0.18, metalness: 0.92, flatShading: true, side: THREE.DoubleSide});
+    const chiselNeckMat = new THREE.MeshStandardMaterial({color: 0x94a3b8, roughness: 0.27, metalness: 0.86, flatShading: true});
+
+    // Profil crosscut chisel: mata sempit dengan sisi agak mengecil ke belakang
+    // sehingga tidak tersangkut di dalam alur. Bukan bilah lebar flat chisel.
+    // Setiap lapis = [tinggi, setengah tebal X, setengah lebar Z].
+    function makeCapeBlade() {
+      const sections = [
+        [0.000, 0.0014, 0.0060], // mata potong tipis, lebar 12 mm skala model
+        [0.019, 0.0085, 0.0052], // bidang baji
+        [0.075, 0.0100, 0.0048], // sisi pahat sedikit menyempit (clearance)
+        [0.113, 0.0125, 0.0055],
+        [0.146, 0.0140, 0.0125]  // melebar ke batang oktagonal
+      ];
+      const verts = [], inds = [];
+      sections.forEach(([y, hx, hz]) =&gt; {
+        verts.push(-hx,y,-hz, hx,y,-hz, hx,y,hz, -hx,y,hz);
+      });
+      for(let layer=0; layer&lt;sections.length-1; layer++) {
+        const a=layer*4, b=(layer+1)*4;
+        for(let edge=0; edge&lt;4; edge++) {
+          const next=(edge+1)%4;
+          inds.push(a+edge,a+next,b+next, a+edge,b+next,b+edge);
+        }
+      }
+      inds.push(0,2,1, 0,3,2);
+      const last=(sections.length-1)*4;
+      inds.push(last,last+1,last+2, last,last+2,last+3);
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute(&#x27;position&#x27;,new THREE.Float32BufferAttribute(verts,3));
+      geo.setIndex(inds);
+      geo.computeVertexNormals();
+      return geo;
+    }
+    const capeBlade = new THREE.Mesh(makeCapeBlade(), hardenedEdgeMat);
+    capeBlade.castShadow = true;
+    capeBlade.receiveShadow = true;
+    chiselTool.add(capeBlade);
+
+    // Bagian transisi baja baja dingin dan batang penampang oktagonal.
+    const shaftGeo = new THREE.CylinderGeometry(0.015, 0.014, 0.23, 8);
+    const chiselShaft = new THREE.Mesh(shaftGeo, chiselMat);
+    chiselShaft.position.y = 0.253;
+    chiselShaft.castShadow = true;
+    chiselTool.add(chiselShaft);
+
+    const neckBand = new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.013,0.024,8), chiselNeckMat);
+    neckBand.position.y = 0.15;
+    chiselTool.add(neckBand);
+
+    // Kepala pahat yang dipukul palu, tepat di sumbu batang.
+    const chiselHead = new THREE.Mesh(new THREE.CylinderGeometry(0.019,0.016,0.041,16), chiselNeckMat);
+    chiselHead.position.y = 0.388;
+    chiselHead.castShadow = true;
+    chiselTool.add(chiselHead);
+    const chiselCapY = 0.4085; // bidang tumbukan atas kepala pahat
+
+    // Palu konde: bagian muka RATA mengarah ke kepala pahat; gagang menyamping
+    // keluar bidang agar tidak menutupi ujung pahat saat kamera berputar.
+    const hammerPivot = new THREE.Group();
+    chiselingGroup.add(hammerPivot);
+    const hammerHeadMat = new THREE.MeshStandardMaterial({color:0x273449,roughness:0.24,metalness:0.88});
+    const hammerSteelFace = new THREE.MeshStandardMaterial({color:0xcbd5e1,roughness:0.18,metalness:0.9});
+    const hammerHandleMat = new THREE.MeshStandardMaterial({color:0xa85a25,roughness:0.57});
+
+    const hammerHead = new THREE.Mesh(new THREE.CylinderGeometry(0.032,0.032,0.112,24), hammerHeadMat);
+    hammerHead.castShadow = true;
+    hammerPivot.add(hammerHead);
+    // Ujung datar bawah berada di -0.059 terhadap pusat palu.
+    const strikingFace = new THREE.Mesh(new THREE.CylinderGeometry(0.030,0.030,0.006,24), hammerSteelFace);
+    strikingFace.position.y = -0.056;
+    hammerPivot.add(strikingFace);
+    const hammerPeen = new THREE.Mesh(new THREE.SphereGeometry(0.027,20,16), hammerSteelFace);
+    hammerPeen.position.y = 0.067;
+    hammerPivot.add(hammerPeen);
+
+    const hammerHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.016,0.32,16),hammerHandleMat);
+    hammerHandle.rotation.x = Math.PI / 2;
+    hammerHandle.position.z = 0.175;
+    hammerHandle.castShadow = true;
+    hammerPivot.add(hammerHandle);
+    const hammerGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.017,0.085,16),
+      new THREE.MeshStandardMaterial({color:0xea580c,roughness:0.66}));
+    hammerGrip.rotation.x = Math.PI/2;
+    hammerGrip.position.z = 0.303;
+    hammerPivot.add(hammerGrip);
+
+    // =========================================================================
+    // 5D. ALAT PENGGERGAJIAN: GERGAJI BESI (HACKSAW FRAME &amp; BLADE)
+    // =========================================================================
+    const sawingGroup = new THREE.Group();
+    sawingGroup.visible = false;
+    scene.add(sawingGroup);
+
+    // Tekstur Gigi Gergaji
+    function createSawBladeTexture() {
+      const c = document.createElement(&#x27;canvas&#x27;);
+      c.width = 512;
+      c.height = 64;
+      const ctx = c.getContext(&#x27;2d&#x27;);
+      ctx.fillStyle = &#x27;#0284c7&#x27;;
+      ctx.fillRect(0, 0, 512, 52);
+      ctx.fillStyle = &#x27;#f8fafc&#x27;;
+      for (let x = 0; x &lt; 512; x += 12) {
+        ctx.beginPath();
+        ctx.moveTo(x, 52);
+        ctx.lineTo(x + 8, 64);
+        ctx.lineTo(x + 12, 52);
+        ctx.fill();
+      }
+      return new THREE.CanvasTexture(c);
+    }
+
+    // Daun Gergaji (Hacksaw Blade)
+    const sawBladeGeo = new THREE.BoxGeometry(0.003, 0.022, 0.56);
+    const sawBladeMat = new THREE.MeshStandardMaterial({
+      map: createSawBladeTexture(),
+      metalness: 0.8,
+      roughness: 0.25
+    });
+    const sawBlade = new THREE.Mesh(sawBladeGeo, sawBladeMat);
+    sawBlade.castShadow = true;
+    sawingGroup.add(sawBlade);
+
+    // Sengkang / Bingkai Atas Gergaji Besi
+    const frameTopGeo = new THREE.BoxGeometry(0.012, 0.016, 0.58);
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.85, roughness: 0.2 });
+    const frameTop = new THREE.Mesh(frameTopGeo, frameMat);
+    frameTop.position.set(0, 0.12, 0);
+    frameTop.castShadow = true;
+    sawingGroup.add(frameTop);
+
+    const postGeo = new THREE.BoxGeometry(0.012, 0.12, 0.016);
+    const frontPost = new THREE.Mesh(postGeo, frameMat);
+    frontPost.position.set(0, 0.06, -0.28);
+    sawingGroup.add(frontPost);
+
+    const rearPost = new THREE.Mesh(postGeo, frameMat);
+    rearPost.position.set(0, 0.06, 0.28);
+    sawingGroup.add(rearPost);
+
+    // Gagang Gergaji Oranye Ergonomis
+    const sawHandleGeo = new THREE.BoxGeometry(0.026, 0.13, 0.09);
+    const sawHandleMat = new THREE.MeshStandardMaterial({ color: 0xea580c, roughness: 0.35 });
+    const sawHandle = new THREE.Mesh(sawHandleGeo, sawHandleMat);
+    sawHandle.position.set(0, 0.04, 0.34);
+    sawHandle.rotation.x = 0.25;
+    sawHandle.castShadow = true;
+    sawingGroup.add(sawHandle);
+
+    // =========================================================================
+    // 5E. ALAT PENGEBORAN: CHUCK BOR &amp; MATA BOR SPIRAL (TWIST DRILL BIT)
+    // =========================================================================
+    const drillingGroup = new THREE.Group();
+    drillingGroup.visible = false;
+    scene.add(drillingGroup);
+
+    // Tekstur Alur Heliks Mata Bor (Spiral Flute)
+    function createDrillFluteTexture() {
+      const c = document.createElement(&#x27;canvas&#x27;);
+      c.width = 256;
+      c.height = 512;
+      const ctx = c.getContext(&#x27;2d&#x27;);
+      ctx.fillStyle = &#x27;#cbd5e1&#x27;;
+      ctx.fillRect(0, 0, 256, 512);
+      ctx.strokeStyle = &#x27;#1e293b&#x27;;
+      ctx.lineWidth = 28;
+      for (let y = -256; y &lt; 768; y += 90) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(256, y + 180);
+        ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    const drillRotatingUnit = new THREE.Group();
+    drillingGroup.add(drillRotatingUnit);
+
+    // Chuck Kepala Bor
+    const chuckGeo = new THREE.CylinderGeometry(0.045, 0.036, 0.14, 24);
+    const chuckMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.25 });
+    const chuckMesh = new THREE.Mesh(chuckGeo, chuckMat);
+    chuckMesh.position.y = 0.27;
+    chuckMesh.castShadow = true;
+    drillRotatingUnit.add(chuckMesh);
+
+    // Batang Mata Bor Spiral (Twist Drill Bit)
+    const drillBitGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.2, 24);
+    const drillBitMat = new THREE.MeshStandardMaterial({
+      map: createDrillFluteTexture(),
+      bumpMap: createDrillFluteTexture(),
+      bumpScale: 0.015,
+      metalness: 0.85,
+      roughness: 0.2
+    });
+    const drillBitMesh = new THREE.Mesh(drillBitGeo, drillBitMat);
+    drillBitMesh.position.y = 0.1;
+    drillBitMesh.castShadow = true;
+    drillRotatingUnit.add(drillBitMesh);
+
+    // Ujung Kerucut Mata Bor 118 Derajat
+    const drillPointGeo = new THREE.ConeGeometry(0.016, 0.022, 24);
+    const drillPointMesh = new THREE.Mesh(drillPointGeo, polishedSteelMat);
+    drillPointMesh.rotation.x = Math.PI;
+    drillPointMesh.position.y = -0.011;
+    drillRotatingUnit.add(drillPointMesh);
+
+    // 6. Sistem Partikel Beram Besi / Metal Shavings
+    const particleCount = 220;
+    const particlesGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleVelocities = [];
+
+    for (let i = 0; i &lt; particleCount; i++) {
+      particlePositions[i * 3] = 0;
+      particlePositions[i * 3 + 1] = -100; // Sembunyi sebelum aktif
+      particlePositions[i * 3 + 2] = 0;
+      particleVelocities.push({
+        x: (Math.random() - 0.5) * 0.04,
+        y: Math.random() * 0.03 + 0.01,
+        z: (Math.random() - 0.5) * 0.04,
+        life: 0
+      });
+    }
+
+    particlesGeo.setAttribute(&#x27;position&#x27;, new THREE.BufferAttribute(particlePositions, 3));
+    const particlesMat = new THREE.PointsMaterial({
+      color: 0xfef08a,
+      size: 0.018,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending
+    });
+    const particleSystem = new THREE.Points(particlesGeo, particlesMat);
+    scene.add(particleSystem);
+
+    function emitParticles(contactX, contactY, contactZ, intensity, dirX, dirZ, spreadX = 0.14, spreadZ = 0.035) {
+      const positions = particleSystem.geometry.attributes.position.array;
+      const countToEmit = Math.floor(intensity * 5);
+      let emitted = 0;
+
+      for (let i = 0; i &lt; particleCount &amp;&amp; emitted &lt; countToEmit; i++) {
+        if (particleVelocities[i].life &lt;= 0) {
+          positions[i * 3] = contactX + (Math.random() - 0.5) * spreadX;
+          positions[i * 3 + 1] = contactY + 0.004;
+          positions[i * 3 + 2] = contactZ + (Math.random() - 0.5) * spreadZ;
+
+          // Beram terpancar searah dorongan langkah potong kikir (dirX, dirZ)
+          particleVelocities[i].x = dirX * (0.02 + Math.random() * 0.025) + (Math.random() - 0.5) * 0.015;
+          particleVelocities[i].y = Math.random() * 0.028 + 0.012;
+          particleVelocities[i].z = dirZ * (0.02 + Math.random() * 0.025) + (Math.random() - 0.5) * 0.015;
+          particleVelocities[i].life = 1.0;
+          emitted++;
+        }
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+
+    function updateParticles() {
+      const positions = particleSystem.geometry.attributes.position.array;
+      for (let i = 0; i &lt; particleCount; i++) {
+        if (particleVelocities[i].life &gt; 0) {
+          positions[i * 3] += particleVelocities[i].x;
+          positions[i * 3 + 1] += particleVelocities[i].y;
+          positions[i * 3 + 2] += particleVelocities[i].z;
+
+          // Gravitasi serbuk
+          particleVelocities[i].y -= 0.0018;
+          particleVelocities[i].life -= 0.04;
+
+          if (positions[i * 3 + 1] &lt; 0.05 || particleVelocities[i].life &lt;= 0) {
+            particleVelocities[i].life = 0;
+            positions[i * 3 + 1] = -100; // Sembunyikan
+          }
+        }
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+
+    // --- DOM Elements Reference ---
+    const hudProcess = document.getElementById(&#x27;hud-process&#x27;);
+    const hudPhase = document.getElementById(&#x27;hud-phase&#x27;);
+    const phaseDot = document.getElementById(&#x27;phase-dot&#x27;);
+    const phasePing = document.getElementById(&#x27;phase-ping&#x27;);
+    const hudCycleLabel = document.getElementById(&#x27;hud-cycle-label&#x27;);
+    const hudStrokes = document.getElementById(&#x27;hud-strokes&#x27;);
+    const hudDepthLabel = document.getElementById(&#x27;hud-depth-label&#x27;);
+    const hudEroded = document.getElementById(&#x27;hud-eroded&#x27;);
+    const hudRaLabel = document.getElementById(&#x27;hud-ra-label&#x27;);
+    const hudRa = document.getElementById(&#x27;hud-ra&#x27;);
+    const lblHeight = document.getElementById(&#x27;lbl-height&#x27;);
+    const lblTargetMax = document.getElementById(&#x27;lbl-target-max&#x27;);
+    const progEroded = document.getElementById(&#x27;prog-eroded&#x27;);
+    const sliderSpm = document.getElementById(&#x27;slider-spm&#x27;);
+    const valSpm = document.getElementById(&#x27;val-spm&#x27;);
+    const lblSpeedTitle = document.getElementById(&#x27;lbl-speed-title&#x27;);
+    const sliderForce = document.getElementById(&#x27;slider-force&#x27;);
+    const valForce = document.getElementById(&#x27;val-force&#x27;);
+    const btnTogglePlay = document.getElementById(&#x27;btn-toggle-play&#x27;);
+    const btnPlayIcon = document.getElementById(&#x27;btn-play-icon&#x27;);
+    const btnPlayText = document.getElementById(&#x27;btn-play-text&#x27;);
+    const btnReset = document.getElementById(&#x27;btn-reset&#x27;);
+    const btnCameraView = document.getElementById(&#x27;btn-camera-view&#x27;);
+    const toast = document.getElementById(&#x27;toast&#x27;);
+    const lblTechAngle = document.getElementById(&#x27;lbl-tech-angle&#x27;);
+
+    // Edu Card Elements
+    const eduTitle = document.getElementById(&#x27;edu-title&#x27;);
+    const eduBadge = document.getElementById(&#x27;edu-badge&#x27;);
+    const eduDesc = document.getElementById(&#x27;edu-desc&#x27;);
+    const eduIcon = document.getElementById(&#x27;edu-icon&#x27;);
+
+
+    // Panel mengambang ditutup sejak awal: tampilan proses 3D bebas hambatan.
+    const settingsDrawer = document.getElementById(&#x27;settings-drawer&#x27;);
+    const statsPanel = document.getElementById(&#x27;stats-panel&#x27;);
+    const materialPanel = document.getElementById(&#x27;material-panel&#x27;);
+    const btnSettings = document.getElementById(&#x27;btn-settings&#x27;);
+    const btnStats = document.getElementById(&#x27;btn-stats&#x27;);
+    const btnMaterial = document.getElementById(&#x27;btn-material&#x27;);
+    const panelPairs = [
+      {panel:settingsDrawer, trigger:btnSettings},
+      {panel:statsPanel, trigger:btnStats},
+      {panel:materialPanel, trigger:btnMaterial}
+    ];
+    function closeAllPanels() {
+      panelPairs.forEach(({panel,trigger}) =&gt; {
+        panel.classList.remove(&#x27;is-open&#x27;);
+        panel.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);
+        trigger.setAttribute(&#x27;aria-expanded&#x27;,&#x27;false&#x27;);
+      });
+    }
+    function togglePanel(panel, trigger) {
+      const shouldOpen = !panel.classList.contains(&#x27;is-open&#x27;);
+      closeAllPanels();
+      if (shouldOpen) {
+        panel.classList.add(&#x27;is-open&#x27;);
+        panel.setAttribute(&#x27;aria-hidden&#x27;,&#x27;false&#x27;);
+        trigger.setAttribute(&#x27;aria-expanded&#x27;,&#x27;true&#x27;);
+      }
+    }
+    btnSettings.addEventListener(&#x27;click&#x27;, () =&gt; togglePanel(settingsDrawer,btnSettings));
+    btnStats.addEventListener(&#x27;click&#x27;, () =&gt; togglePanel(statsPanel,btnStats));
+    btnMaterial.addEventListener(&#x27;click&#x27;, () =&gt; togglePanel(materialPanel,btnMaterial));
+    document.getElementById(&#x27;btn-close-settings&#x27;).addEventListener(&#x27;click&#x27;, closeAllPanels);
+    document.getElementById(&#x27;btn-close-stats&#x27;).addEventListener(&#x27;click&#x27;, closeAllPanels);
+    document.getElementById(&#x27;btn-close-material&#x27;).addEventListener(&#x27;click&#x27;, closeAllPanels);
+    const btnFocus = document.getElementById(&#x27;btn-focus&#x27;);
+    const btnExitFocus = document.getElementById(&#x27;btn-exit-focus&#x27;);
+    function setFocusMode(activate) {
+      if (activate) closeAllPanels();
+      document.body.classList.toggle(&#x27;focus-view&#x27;,activate);
+      btnFocus.setAttribute(&#x27;aria-pressed&#x27;, String(activate));
+    }
+    btnFocus.addEventListener(&#x27;click&#x27;, () =&gt; setFocusMode(true));
+    btnExitFocus.addEventListener(&#x27;click&#x27;, () =&gt; setFocusMode(false));
+    document.addEventListener(&#x27;keydown&#x27;, event =&gt; {
+      if (event.key === &#x27;Escape&#x27;) {
+        if (document.body.classList.contains(&#x27;focus-view&#x27;)) setFocusMode(false);
+        else closeAllPanels();
+      }
+    });
+    // Menyentuh kanvas otomatis menyingkirkan panel, tanpa mengganggu OrbitControls.
+    renderer.domElement.addEventListener(&#x27;pointerdown&#x27;, () =&gt; closeAllPanels());
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.style.opacity = &#x27;1&#x27;;
+      setTimeout(() =&gt; { toast.style.opacity = &#x27;0&#x27;; }, 2200);
+    }
+
+    // --- Pengaturan Mode Kerja Bangku (4 Mode) ---
+    const modeTabs = document.querySelectorAll(&#x27;.mode-tab&#x27;);
+    const subPanels = {
+      filing: document.getElementById(&#x27;subpanel-filing&#x27;),
+      chiseling: document.getElementById(&#x27;subpanel-chiseling&#x27;),
+      sawing: document.getElementById(&#x27;subpanel-sawing&#x27;),
+      drilling: document.getElementById(&#x27;subpanel-drilling&#x27;)
+    };
+
+    function switchProcessMode(newMode) {
+      closeAllPanels();
+      state.processMode = newMode;
+      state.cycleTime = 0;
+      state.strokeCount = 0;
+      state.erodedMm = 0;
+      state.chiselProgressX = -0.105;
+      previousProgress = -1;
+      resetWorkSurfaceTexture();
+      updateWorkpieceGeometry();
+
+      // Update Tab Styling
+      modeTabs.forEach(btn =&gt; {
+        if (btn.dataset.mode === newMode) {
+          btn.className = &#x27;mode-tab py-2 px-1 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] flex flex-col items-center gap-1 transition&#x27;;
+        } else {
+          btn.className = &#x27;mode-tab py-2 px-1 rounded-lg text-slate-400 hover:text-white font-medium text-[10px] flex flex-col items-center gap-1 transition&#x27;;
+        }
+      });
+
+      // Tampilkan Sub-Panel yang sesuai
+      Object.keys(subPanels).forEach(k =&gt; {
+        subPanels[k].classList.toggle(&#x27;hidden&#x27;, k !== newMode);
+      });
+
+      // Visibilitas Alat 3D
+      fileAssembly.visible = (newMode === &#x27;filing&#x27;);
+      chiselingGroup.visible = (newMode === &#x27;chiseling&#x27;);
+      sawingGroup.visible = (newMode === &#x27;sawing&#x27;);
+      drillingGroup.visible = (newMode === &#x27;drilling&#x27;);
+
+      // Sorot area kontak dan kepala pahat ketika crosscut chiseling dipilih.
+      if (newMode === &#x27;chiseling&#x27;) {
+        controls.target.set(-0.13, 0.46, -0.01);
+        camera.position.set(0.58, 0.94, 1.17);
+      }
+
+      // Update Kartu Materi Edukasi &amp; Label HUD
+      const info = BENCHWORK_INFO[newMode];
+      hudProcess.textContent = info.hudName;
+      hudCycleLabel.textContent = info.cycleLabel;
+      hudDepthLabel.textContent = info.depthLabel;
+      hudRaLabel.textContent = info.raLabel;
+      eduTitle.textContent = info.title;
+      eduBadge.textContent = info.badge;
+      eduDesc.textContent = info.desc;
+      eduIcon.className = info.icon;
+
+      // Label Kecepatan Spesifik (RPM untuk Drilling, SPM untuk lainnya)
+      if (newMode === &#x27;drilling&#x27;) {
+        lblSpeedTitle.textContent = &#x27;Putaran Spindle (RPM)&#x27;;
+        valSpm.textContent = `${state.spm * 15} RPM`;
+        lblTargetMax.textContent = &#x27;12.00 mm&#x27;;
+      } else {
+        lblSpeedTitle.textContent = &#x27;Kecepatan Langkah&#x27;;
+        valSpm.textContent = `${state.spm} SPM`;
+        lblTargetMax.textContent = &#x27;2.00 mm&#x27;;
+      }
+
+      updateRoughnessCalculation();
+      updateHUD();
+      showToast(`Mode Aktif: ${info.hudName}`);
+    }
+
+    modeTabs.forEach(btn =&gt; {
+      btn.addEventListener(&#x27;click&#x27;, () =&gt; switchProcessMode(btn.dataset.mode));
+    });
+
+    // --- Pengaturan sudut crosscut chisel, gergaji, dan bor ---
+    const chiselBtns = document.querySelectorAll(&#x27;.chisel-btn&#x27;);
+    const lblChiselAngle = document.getElementById(&#x27;lbl-chisel-angle&#x27;);
+    chiselBtns.forEach(btn =&gt; {
+      btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state.chiselAngleDeg = parseInt(btn.dataset.chisel);
+        chiselBtns.forEach(b =&gt; {
+          b.className = (b === btn)
+            ? &#x27;chisel-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&#x27;
+            : &#x27;chisel-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&#x27;;
+        });
+        lblChiselAngle.textContent = `${state.chiselAngleDeg}°`;
+      });
+    });
+
+    const sawposBtns = document.querySelectorAll(&#x27;.sawpos-btn&#x27;);
+    const lblSawPos = document.getElementById(&#x27;lbl-saw-pos&#x27;);
+    sawposBtns.forEach(btn =&gt; {
+      btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state.sawPosX = parseFloat(btn.dataset.sawpos);
+        resetWorkSurfaceTexture();
+        sawposBtns.forEach(b =&gt; {
+          b.className = (b === btn)
+            ? &#x27;sawpos-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&#x27;
+            : &#x27;sawpos-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&#x27;;
+        });
+        lblSawPos.textContent = btn.textContent.trim();
+      });
+    });
+
+    const drilldiaBtns = document.querySelectorAll(&#x27;.drilldia-btn&#x27;);
+    const lblDrillDia = document.getElementById(&#x27;lbl-drill-dia&#x27;);
+    drilldiaBtns.forEach(btn =&gt; {
+      btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state.drillDiameterScale = parseFloat(btn.dataset.drilldia);
+        drillBitMesh.scale.set(state.drillDiameterScale, 1, state.drillDiameterScale);
+        drillPointMesh.scale.set(state.drillDiameterScale, 1, state.drillDiameterScale);
+        resetWorkSurfaceTexture();
+        drilldiaBtns.forEach(b =&gt; {
+          b.className = (b === btn)
+            ? &#x27;drilldia-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[10px] text-center&#x27;
+            : &#x27;drilldia-btn py-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white transition font-medium text-[10px] text-center&#x27;;
+        });
+        lblDrillDia.textContent = btn.textContent.trim();
+        updateRoughnessCalculation();
+      });
+    });
+
+    // --- Event Listeners UI Controls ---
+    sliderSpm.addEventListener(&#x27;input&#x27;, (e) =&gt; {
+      state.spm = parseInt(e.target.value);
+      if (state.processMode === &#x27;drilling&#x27;) {
+        valSpm.textContent = `${state.spm * 15} RPM`;
+      } else {
+        valSpm.textContent = `${state.spm} SPM`;
+      }
+    });
+
+    sliderForce.addEventListener(&#x27;input&#x27;, (e) =&gt; {
+      state.forceN = parseInt(e.target.value);
+      valForce.textContent = `${state.forceN} N`;
+      updateRoughnessCalculation();
+    });
+
+    btnTogglePlay.addEventListener(&#x27;click&#x27;, () =&gt; {
+      state.isPlaying = !state.isPlaying;
+      if (state.isPlaying) {
+        btnPlayIcon.className = &#x27;fa-solid fa-pause&#x27;;
+        btnPlayText.textContent = &#x27;Jeda&#x27;;
+        btnTogglePlay.classList.replace(&#x27;bg-emerald-600&#x27;, &#x27;bg-cyan-600&#x27;);
+        showToast(&#x27;Animasi Dilanjutkan&#x27;);
+      } else {
+        btnPlayIcon.className = &#x27;fa-solid fa-play&#x27;;
+        btnPlayText.textContent = &#x27;Mulai&#x27;;
+        btnTogglePlay.classList.replace(&#x27;bg-cyan-600&#x27;, &#x27;bg-emerald-600&#x27;);
+        showToast(&#x27;Animasi Dijeda&#x27;);
+      }
+    });
+
+    btnReset.addEventListener(&#x27;click&#x27;, () =&gt; {
+      state.erodedMm = 0.0;
+      state.strokeCount = 0;
+      state.chiselProgressX = -0.105;
+      previousProgress = -1;
+      resetWorkSurfaceTexture();
+      updateWorkpieceGeometry();
+      updateHUD();
+      showToast(&#x27;Material kuningan di-reset ke kondisi awal (25.000 mm)&#x27;);
+    });
+
+    btnCameraView.addEventListener(&#x27;click&#x27;, () =&gt; {
+      if (state.processMode === &#x27;chiseling&#x27;) {
+        controls.target.set(-0.13, 0.46, -0.01);
+        camera.position.set(0.58, 0.94, 1.17);
+      } else {
+        controls.target.set(0, 0.38, -0.01);
+        camera.position.set(0.82, 0.75, 0.92);
+      }
+      showToast(&#x27;Kamera terfokus pada bidang kontak alat &amp; material&#x27;);
+    });
+
+    // Pemilihan Teknik Pengikiran &amp; Rotasi +90 Derajat
+    const techBtns = {
+      straight: document.getElementById(&#x27;tech-straight&#x27;),
+      cross45: document.getElementById(&#x27;tech-cross45&#x27;),
+      cross60: document.getElementById(&#x27;tech-cross60&#x27;)
+    };
+    const btnRotate90 = document.getElementById(&#x27;btn-rotate-90&#x27;);
+
+    function applyEffectiveAngle() {
+      state.angleDegrees = state.baseAngleDegrees + state.extraRotation90;
+      const extraLabel = state.extraRotation90 &gt; 0 ? ` [+${state.extraRotation90}°]` : &#x27;&#x27;;
+
+      if (state.angleMode === &#x27;straight&#x27;) {
+        lblTechAngle.textContent = `Lurus 0° (Putar 90°)${extraLabel}`;
+      } else if (state.angleMode === &#x27;cross45&#x27;) {
+        lblTechAngle.textContent = `Menyilang (-45°)${extraLabel}`;
+      } else if (state.angleMode === &#x27;cross60&#x27;) {
+        lblTechAngle.textContent = `Menyilang (-60°)${extraLabel}`;
+      }
+    }
+
+    function setTechnique(tech) {
+      state.angleMode = tech;
+      state.extraRotation90 = 0;
+      Object.keys(techBtns).forEach(k =&gt; {
+        if (k === tech) {
+          techBtns[k].className = &#x27;tech-btn py-1.5 rounded-lg bg-cyan-600 text-white shadow font-semibold text-[11px] text-center&#x27;;
+        } else {
+          techBtns[k].className = &#x27;tech-btn py-1.5 rounded-lg text-slate-400 hover:text-white transition font-medium text-[11px] text-center&#x27;;
+        }
+      });
+
+      if (tech === &#x27;straight&#x27;) {
+        // Sudut 0 derajat diputar 90 derajat dari sebelumnya (180° -&gt; -90°) agar searah panjang rahang/material
+        state.baseAngleDegrees = -90;
+      } else if (tech === &#x27;cross45&#x27;) {
+        state.baseAngleDegrees = -45;
+      } else if (tech === &#x27;cross60&#x27;) {
+        state.baseAngleDegrees = -60;
+      }
+      applyEffectiveAngle();
+      updateRoughnessCalculation();
+      showToast(`Teknik diubah: ${lblTechAngle.textContent}`);
+    }
+
+    btnRotate90.addEventListener(&#x27;click&#x27;, () =&gt; {
+      state.extraRotation90 = (state.extraRotation90 + 90) % 360;
+      applyEffectiveAngle();
+      showToast(`Arah kikir diputar +90° (Total offset: +${state.extraRotation90}°)`);
+    });
+
+    techBtns.straight.addEventListener(&#x27;click&#x27;, () =&gt; setTechnique(&#x27;straight&#x27;));
+    techBtns.cross45.addEventListener(&#x27;click&#x27;, () =&gt; setTechnique(&#x27;cross45&#x27;));
+    techBtns.cross60.addEventListener(&#x27;click&#x27;, () =&gt; setTechnique(&#x27;cross60&#x27;));
+
+    function updateRoughnessCalculation() {
+      if (state.processMode === &#x27;filing&#x27;) {
+        let baseRa = 2.4;
+        if (state.angleMode === &#x27;straight&#x27;) baseRa = 3.6;
+        if (state.angleMode === &#x27;cross45&#x27;) baseRa = 2.3;
+        if (state.angleMode === &#x27;cross60&#x27;) baseRa = 1.9;
+        const forceFactor = state.forceN / 80;
+        state.surfaceRa = (baseRa * (0.8 + 0.25 * forceFactor)).toFixed(2);
+        hudRa.textContent = `${state.surfaceRa} µm`;
+      } else if (state.processMode === &#x27;chiseling&#x27;) {
+        const chipMm = (0.35 * (state.forceN / 80)).toFixed(2);
+        hudRa.textContent = `${chipMm} mm`;
+      } else if (state.processMode === &#x27;sawing&#x27;) {
+        hudRa.textContent = &#x27;1.20 mm&#x27;;
+      } else if (state.processMode === &#x27;drilling&#x27;) {
+        const diaMm = state.drillDiameterScale === 0.75 ? &#x27;6.0&#x27; : (state.drillDiameterScale === 1.0 ? &#x27;10.0&#x27; : &#x27;13.0&#x27;);
+        hudRa.textContent = `Ø ${diaMm} mm`;
+      }
+    }
+
+    function updateWorkpieceGeometry() {
+      const maxLim = state.processMode === &#x27;drilling&#x27; ? 12.0 : state.maxErosion;
+      const remainingHeight = Math.max(0, state.initialHeight - state.erodedMm);
+      lblHeight.textContent = `${remainingHeight.toFixed(3)} mm`;
+
+      const erodedPercent = (state.erodedMm / maxLim) * 100;
+      progEroded.style.width = `${Math.min(erodedPercent, 100)}%`;
+
+      // Penyusutan tinggi balok material secara nyata saat mode PENGIKIRAN
+      const scaleRatio = state.processMode === &#x27;filing&#x27;
+        ? Math.max(0.75, 1.0 - (state.erodedMm / state.maxErosion) * 0.22)
+        : 1.0;
+      workpiece.scale.y = scaleRatio;
+      const newHeight = workpieceInitialHeight * scaleRatio;
+      const bottomY = workpieceBaseY - workpieceInitialHeight / 2;
+      workpiece.position.y = bottomY + newHeight / 2;
+
+      const currentSurfaceY = bottomY + newHeight;
+      topSurfaceMesh.position.y = currentSurfaceY + 0.0006;
+    }
+
+    function updateHUD() {
+      hudStrokes.textContent = state.strokeCount;
+      hudEroded.textContent = `${state.erodedMm.toFixed(3)} mm`;
+    }
+
+    function setPhaseHUD(text, isActiveGreen) {
+      hudPhase.textContent = text;
+      if (isActiveGreen) {
+        hudPhase.className = &#x27;font-semibold text-emerald-400&#x27;;
+        phaseDot.className = &#x27;relative inline-flex rounded-full h-2 w-2 bg-emerald-500&#x27;;
+        phasePing.className = &#x27;animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75&#x27;;
+      } else {
+        hudPhase.className = &#x27;font-semibold text-amber-400&#x27;;
+        phaseDot.className = &#x27;relative inline-flex rounded-full h-2 w-2 bg-amber-500&#x27;;
+        phasePing.className = &#x27;hidden&#x27;;
+      }
+    }
+
+    // --- Main Animation Loop &amp; Kinematika 4 Proses Kerja Bangku ---
+    const clock = new THREE.Clock();
+    let previousProgress = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+
+      if (state.isPlaying) {
+        const cycleFreq = state.spm / 60;
+        state.cycleTime += delta * cycleFreq * (Math.PI * 2);
+
+        const strokePos = Math.sin(state.cycleTime);
+        const strokeVelocity = Math.cos(state.cycleTime);
+        const currentSurfaceY = topSurfaceMesh.position.y;
+        const forceRatio = state.forceN / 80;
+
+        // ===============================================================
+        // MODE 1: PENGIKIRAN (FILING)
+        // ===============================================================
+        if (state.processMode === &#x27;filing&#x27;) {
+          const strokeLength = 0.24;
+          const isCuttingStroke = strokeVelocity &gt;= 0;
+          const radAngle = THREE.MathUtils.degToRad(state.angleDegrees);
+          const forwardDirX = -Math.sin(radAngle);
+          const forwardDirZ = -Math.cos(radAngle);
+          const currentContactY = currentSurfaceY + (bladeThickness / 2);
+
+          let targetY = currentContactY;
+          let arrowScale = 1.0;
+
+          if (isCuttingStroke) {
+            targetY = currentContactY;
+            setPhaseHUD(&#x27;MAJU (POTONG)&#x27;, true);
+
+            arrowScale = 0.9 * forceRatio;
+            arrowMat.color.setHex(0x38bdf8);
+            arrowMat.emissive.setHex(0x0284c7);
+            arrowMat.emissiveIntensity = 1.0;
+
+            if (Math.abs(strokePos) &lt; 0.85) {
+              emitParticles(workpiece.position.x, currentSurfaceY, workpiece.position.z, forceRatio, forwardDirX, forwardDirZ);
+              addFilingScratches(state.angleDegrees, forceRatio);
+            }
+
+            if (state.erodedMm &lt; state.maxErosion) {
+              const erosionRatePerSec = 0.00038 * forceRatio * (state.spm / 45);
+              state.erodedMm = Math.min(state.maxErosion, state.erodedMm + erosionRatePerSec * delta);
+              updateWorkpieceGeometry();
+              updateHUD();
+            }
+          } else {
+            targetY = currentContactY + 0.022;
+            setPhaseHUD(&#x27;MUNDUR (BEBAS)&#x27;, false);
+            arrowScale = 0.25;
+            arrowMat.color.setHex(0x64748b);
+            arrowMat.emissive.setHex(0x000000);
+            arrowMat.emissiveIntensity = 0.0;
+          }
+
+          if (previousProgress &lt; 0 &amp;&amp; strokeVelocity &gt;= 0) {
+            state.strokeCount++;
+            updateHUD();
+          }
+          previousProgress = strokeVelocity;
+
+          const forwardDistance = strokePos * strokeLength;
+          fileAssembly.rotation.y = radAngle;
+          fileAssembly.position.x = forwardDirX * forwardDistance;
+          fileAssembly.position.y = THREE.MathUtils.lerp(fileAssembly.position.y, targetY, 0.3);
+          fileAssembly.position.z = -0.01 + forwardDirZ * forwardDistance;
+          arrowGroup.scale.set(arrowScale, arrowScale, arrowScale);
+        }
+
+        // ===============================================================
+        // MODE 2: PEMAHATAN (CROSSCUT / CAPE CHISEL &amp; PALU KONDE)
+        // ===============================================================
+        else if (state.processMode === &#x27;chiseling&#x27;) {
+          const startX = -0.105;
+          const endX = 0.105;
+          const angleRad = THREE.MathUtils.degToRad(90 - state.chiselAngleDeg);
+          const tipX = THREE.MathUtils.clamp(state.chiselProgressX, startX, endX);
+          const tipY = currentSurfaceY + 0.0006; // mata tepat menyentuh permukaan atas
+          const tipZ = -0.01;                    // tepat tengah tebal benda kerja
+          const axisX = -Math.sin(angleRad);    // batang berada di belakang mata pahat
+          const axisY =  Math.cos(angleRad);
+          const completed = (tipX &gt;= endX - 0.00001);
+
+          // Ujung mata pahat di alur kerja. Sudut diukur dari bidang horizontal;
+          // posisi kepala pahat mengikuti rotasi, bukan nilai offset manual.
+          chiselTool.rotation.set(0, 0, angleRad);
+          chiselTool.position.set(tipX, tipY, tipZ);
+
+          // Muka palu selalu sejajar dengan bidang pukul kepala pahat.
+          // Jarak dari mata potong sampai bidang pukul = chiselCapY.
+          const swingWave = Math.sin(state.cycleTime);
+          const downFraction = THREE.MathUtils.clamp((swingWave - 0.2)/0.8,0,1);
+          const gap = completed ? 0.11 : 0.11 * (1 - downFraction);
+          const headCenterFromTip = chiselCapY + 0.059 + gap;
+          hammerPivot.rotation.set(0, 0, angleRad);
+          hammerPivot.position.set(
+            tipX + axisX * headCenterFromTip,
+            tipY + axisY * headCenterFromTip,
+            tipZ
+          );
+
+          // Benda terpotong hanya saat PALU MENYENTUH kepala pahat;
+          // langkah kemajuan dan jejak potong sesuai titik ujung pahat.
+          const hitNow = !completed &amp;&amp; previousProgress &lt; 0.985 &amp;&amp; swingWave &gt;= 0.985;
+          if (hitNow) {
+            state.strokeCount++;
+            state.chiselProgressX = Math.min(endX, tipX + 0.0105 * Math.max(0.75, Math.min(1.25, forceRatio)));
+            const progress = (state.chiselProgressX - startX) / (endX-startX);
+            drawChiselGrooveOnSurface(progress);
+            state.erodedMm = Math.min(state.maxErosion, state.maxErosion * progress);
+            emitParticles(tipX, tipY, tipZ, forceRatio * 1.7, 1, 0.1, 0.019, 0.013);
+            updateWorkpieceGeometry();
+            updateHUD();
+            if (state.chiselProgressX &gt;= endX) {
+              showToast(&#x27;Alur crosscut selesai — klik Reset Benda untuk mengulang.&#x27;);
+            }
+          }
+          previousProgress = swingWave;
+          if (completed) {
+            setPhaseHUD(&#x27;ALUR SELESAI&#x27;, true);
+          } else if (swingWave &gt;= 0.92) {
+            setPhaseHUD(&#x27;PUKULAN DI KEPALA PAHAT&#x27;, true);
+          } else {
+            setPhaseHUD(&#x27;PALU DIANGKAT / DISIAPKAN&#x27;, false);
+          }
+        }
+
+        // ===============================================================
+        // MODE 3: PENGGERGAJIAN (SAWING - GERGAJI BESI / HACKSAW)
+        // ===============================================================
+        else if (state.processMode === &#x27;sawing&#x27;) {
+          const isSawCutting = strokeVelocity &gt;= 0;
+          const sawStrokeLen = 0.14;
+          const depthRatio = Math.min(1, state.erodedMm / state.maxErosion);
+          const kerfSinkY = depthRatio * 0.032; // Daun gergaji turun masuk ke dalam celah potong
+
+          if (isSawCutting) {
+            setPhaseHUD(&#x27;DORONG MAJU (POTONG)&#x27;, true);
+            sawingGroup.position.set(
+              state.sawPosX,
+              currentSurfaceY + 0.01 - kerfSinkY,
+              -strokePos * sawStrokeLen
+            );
+            emitParticles(state.sawPosX, currentSurfaceY - kerfSinkY, -0.02, forceRatio, 0, -1);
+
+            if (state.erodedMm &lt; state.maxErosion) {
+              state.erodedMm = Math.min(state.maxErosion, state.erodedMm + 0.008 * delta * forceRatio);
+              drawSawKerfOnSurface(state.sawPosX, state.erodedMm / state.maxErosion);
+              updateWorkpieceGeometry();
+              updateHUD();
+            }
+          } else {
+            setPhaseHUD(&#x27;TARIK MUNDUR (ANGKAT)&#x27;, false);
+            sawingGroup.position.set(
+              state.sawPosX,
+              currentSurfaceY + 0.024 - kerfSinkY,
+              -strokePos * sawStrokeLen
+            );
+          }
+
+          if (previousProgress &lt; 0 &amp;&amp; strokeVelocity &gt;= 0) {
+            state.strokeCount++;
+            updateHUD();
+          }
+          previousProgress = strokeVelocity;
+        }
+
+        // ===============================================================
+        // MODE 4: PENGEBORAN (DRILLING - MATA BOR PUTAR / TWIST DRILL)
+        // ===============================================================
+        else if (state.processMode === &#x27;drilling&#x27;) {
+          // Putaran cepat poros mata bor
+          const spinSpeed = (state.spm / 45) * 18;
+          drillRotatingUnit.rotation.y -= spinSpeed * delta;
+
+          // Siklus pemakanan turun (feed) lalu naik buang beram (peck drilling)
+          const feedWave = (Math.sin(state.cycleTime * 0.45) + 1) / 2; // 0..1
+          const isFeedingDown = Math.cos(state.cycleTime * 0.45) &gt;= 0;
+          const penetrationY = feedWave * 0.045;
+
+          drillingGroup.position.set(0, currentSurfaceY + 0.035 - penetrationY, -0.01);
+
+          if (isFeedingDown &amp;&amp; penetrationY &gt; 0.012) {
+            setPhaseHUD(&#x27;PEMAKANAN BOR (FEEDING)&#x27;, true);
+            emitParticles(0, currentSurfaceY, -0.01, forceRatio * 1.3, (Math.random() - 0.5), (Math.random() - 0.5));
+
+            if (state.erodedMm &lt; 12.0) {
+              state.erodedMm = Math.min(12.0, state.erodedMm + 0.045 * delta * forceRatio);
+              drawDrillHoleOnSurface(state.drillDiameterScale, state.erodedMm / 12.0);
+              updateWorkpieceGeometry();
+            }
+            state.strokeCount += Math.ceil(spinSpeed * delta * 2);
+            updateHUD();
+          } else {
+            setPhaseHUD(&#x27;RETRAKSI / PENDINGINAN&#x27;, false);
+          }
+        }
+      }
+
+      // Update Partikel Beram Besi
+      updateParticles();
+
+      // Update Orbit Controls
+      controls.update();
+
+      // Render Scene
+      renderer.render(scene, camera);
+    }
+
+    // --- Responsive Resize Handling ---
+    window.addEventListener(&#x27;resize&#x27;, () =&gt; {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Inisialisasi awal saat window siap
+    window.onload = function () {
+      updateRoughnessCalculation();
+      updateWorkpieceGeometry();
+      updateHUD();
+      animate();
+    };
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;">
+                Browser Anda tidak mendukung frame simulasi 3D.
+              </iframe>
+            </div>
           </div>
           <div class="hero-deco"><i class="fa-solid fa-gear"></i></div>
         </div>
@@ -1859,6 +3807,16 @@ navigateTo = function(pageId) {
 };
 
 document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<script>
+/* Pengendali fullscreen iframe simulasi, terpisah dari JS situs utama. */
+function expandBenchWork3D() {
+  const frame = document.getElementById('benchwork3dFrame');
+  if (!frame) return;
+  if (frame.requestFullscreen) frame.requestFullscreen();
+  else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+}
 </script>
 </body>
 </html>
